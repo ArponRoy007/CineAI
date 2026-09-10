@@ -33,4 +33,6 @@ def public_user(user: dict | None) -> dict | None:
         "email": user.get("email", ""),
         "role": user.get("role", "user"),
         "is_active": bool(user.get("is_active", True)),
+        "avatar_url": user.get("avatar_url", ""),
+        "favorite_genre": user.get("favorite_genre", ""),
     }
