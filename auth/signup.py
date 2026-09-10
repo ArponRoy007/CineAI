@@ -35,28 +35,29 @@ def create_user(
     if len(password) < 8:
         return False, "Password must be at least 8 characters."
 
-    if username_exists(username):
-        return False, "Username is already registered."
-
-    if email_exists(email):
-        return False, "Email is already registered."
-
-    password_hash = hash_password(password)
-
-    document = build_user_document(
-        name=name,
-        username=username,
-        email=email,
-        password_hash=password_hash,
-        role="user",
-    )
-
     try:
+        if username_exists(username):
+            return False, "Username is already registered."
+
+        if email_exists(email):
+            return False, "Email is already registered."
+
+        password_hash = hash_password(password)
+
+        document = build_user_document(
+            name=name,
+            username=username,
+            email=email,
+            password_hash=password_hash,
+            role="user",
+        )
+
         users_collection.insert_one(document)
         return True, "Account created successfully."
 
-    except Exception:
-        return False, "Could not create the account. Please try again."
+    except Exception as error:
+        print(f"[Signup MongoDB Error] {type(error).__name__}: {error}")
+        return False, "Account creation is temporarily unavailable. Please try again."
 
 
 def render_signup() -> None:

@@ -49,15 +49,19 @@ def authenticate_user(identifier: str, password: str) -> dict | None:
     # --------------------------------------------------------
     # NORMAL USER
     # --------------------------------------------------------
-    user = users_collection.find_one(
-        {
-            "$or": [
-                {"username": identifier},
-                {"email": identifier.lower()},
-            ],
-            "is_active": True,
-        }
-    )
+    try:
+        user = users_collection.find_one(
+            {
+                "$or": [
+                    {"username": identifier},
+                    {"email": identifier.lower()},
+                ],
+                "is_active": True,
+            }
+        )
+    except Exception as error:
+        print(f"[Login MongoDB Error] {type(error).__name__}: {error}")
+        return None
 
     if not user:
         return None

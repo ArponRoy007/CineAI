@@ -3,6 +3,22 @@ from pymongo import ASCENDING, MongoClient
 from pymongo.collection import Collection
 
 
+class _LazyCollection:
+    """Delay network-backed collection construction until it is used."""
+
+    def __init__(self, factory):
+        self._factory = factory
+        self._collection = None
+
+    def _resolve(self):
+        if self._collection is None:
+            self._collection = self._factory()
+        return self._collection
+
+    def __getattr__(self, name):
+        return getattr(self._resolve(), name)
+
+
 @st.cache_resource
 def get_mongo_client() -> MongoClient:
     """Create and cache the MongoDB Atlas client."""
@@ -64,8 +80,25 @@ def get_users_collection() -> Collection:
     return collection
 
 
-# Existing import used by the current RoyReview application.
-movies_collection = get_movies_collection()
+def get_user_interactions_collection() -> Collection:
+    """Return the append-only user interaction collection."""
+    collection = get_database()[
+        st.secrets.get(
+            "USER_INTERACTIONS_COLLECTION_NAME",
+            "user_interactions",
+        )
+    ]
+    collection.create_index(
+        [("user_id", ASCENDING), ("timestamp", ASCENDING)],
+        name="user_interaction_history",
+    )
+    return collection
 
-# New authentication collection.
-users_collection = get_users_collection()
+
+# Existing import seams used by the current RoyReview application. Keeping
+# these lazy lets local tests and transient outages import the app safely.
+movies_collection = _LazyCollection(get_movies_collection)
+users_collection = _LazyCollection(get_users_collection)
+
+# Interaction logging remains lazy in ai.personalization so a failure here can
+# never block ordinary browsing, search, or Ask Roy requests.

@@ -50,12 +50,17 @@ def upsert_documents(
     if not ids:
         return
 
-    get_vector_collection().upsert(
-        ids=ids,
-        documents=documents,
-        embeddings=embeddings,
-        metadatas=metadatas,
-    )
+    try:
+        get_vector_collection().upsert(
+            ids=ids,
+            documents=documents,
+            embeddings=embeddings,
+            metadatas=metadatas,
+        )
+        return True
+    except Exception as error:
+        print(f"[ChromaDB Upsert Error] {type(error).__name__}: {error}")
+        return False
 
 
 def search_similar(
@@ -63,9 +68,19 @@ def search_similar(
     n_results=5,
     movie_title=None,
 ):
-    collection = get_vector_collection()
+    try:
+        collection = get_vector_collection()
+    except Exception as error:
+        print(f"[ChromaDB Collection Error] {type(error).__name__}: {error}")
+        return {"ids": [[]], "documents": [[]], "metadatas": [[]], "distances": [[]]}
 
-    if collection.count() == 0:
+    try:
+        count = collection.count()
+    except Exception as error:
+        print(f"[ChromaDB Count Error] {type(error).__name__}: {error}")
+        return {"ids": [[]], "documents": [[]], "metadatas": [[]], "distances": [[]]}
+
+    if count == 0:
         return {
             "ids": [[]],
             "documents": [[]],
@@ -82,10 +97,14 @@ def search_similar(
 
         # A movie-specific query should never fall back to another
         # movie if the requested title is not in the knowledge base.
-        matching = collection.get(
-            where=where,
-            include=["metadatas"],
-        )
+        try:
+            matching = collection.get(
+                where=where,
+                include=["metadatas"],
+            )
+        except Exception as error:
+            print(f"[ChromaDB Filter Error] {type(error).__name__}: {error}")
+            return {"ids": [[]], "documents": [[]], "metadatas": [[]], "distances": [[]]}
 
         if not matching.get("ids"):
             return {
@@ -97,29 +116,37 @@ def search_similar(
 
     n_results = min(
         n_results,
-        collection.count(),
+        count,
     )
 
-    return collection.query(
-        query_embeddings=[query_embedding],
-        n_results=n_results,
-        where=where,
-        include=[
-            "documents",
-            "metadatas",
-            "distances",
-        ],
-    )
+    try:
+        return collection.query(
+            query_embeddings=[query_embedding],
+            n_results=n_results,
+            where=where,
+            include=["documents", "metadatas", "distances"],
+        )
+    except Exception as error:
+        print(f"[ChromaDB Query Error] {type(error).__name__}: {error}")
+        return {"ids": [[]], "documents": [[]], "metadatas": [[]], "distances": [[]]}
 
 
 def collection_count():
-    return get_vector_collection().count()
+    try:
+        return get_vector_collection().count()
+    except Exception as error:
+        print(f"[ChromaDB Count Error] {type(error).__name__}: {error}")
+        return 0
 
 
 def clear_collection():
     global _collection
 
-    client = get_chroma_client()
+    try:
+        client = get_chroma_client()
+    except Exception as error:
+        print(f"[ChromaDB Clear Error] {type(error).__name__}: {error}")
+        return False
 
     try:
         client.delete_collection(
@@ -129,3 +156,4 @@ def clear_collection():
         pass
 
     _collection = None
+    return True

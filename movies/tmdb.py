@@ -385,10 +385,14 @@ def enrich_movie(
         TMDB rating
     """
 
-    metadata = build_movie_metadata(
-        title=title,
-        year=year,
-    )
+    try:
+        metadata = build_movie_metadata(
+            title=title,
+            year=year,
+        )
+    except (TMDBError, ValueError, TypeError) as error:
+        print(f"[TMDB Enrichment Error] {type(error).__name__}: {error}")
+        metadata = None
 
     if not metadata:
 

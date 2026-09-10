@@ -2,7 +2,8 @@ import html
 
 import streamlit as st
 
-from rag.qa import answer_question
+from ai.agent import answer_with_agent
+from ai.personalization import log_interaction
 
 QUESTIONS = ["Why did Roy give this rating?", "What does Roy like about this movie?", "What does Roy say about the performances?", "What makes this movie worth watching?"]
 
@@ -11,22 +12,26 @@ def _key(movie):
     return str(movie.get("movie_id") or movie.get("tmdb_id") or movie.get("title") or "movie")
 
 
-def _ask(movie, question):
+def _ask(movie, question, user=None):
     question = (question or "").strip()
     if not question:
         st.toast("Write a question for Roy first.")
         return
     with st.spinner("Ask Roy is reading his notes..."):
         try:
-            result = answer_question(question=question, top_k=5, movie_title=movie.get("title", ""))
+            result = answer_with_agent(
+                question,
+                movie_id=movie.get("movie_id") or movie.get("tmdb_id"),
+            )
             st.session_state["ask_roy_answer"] = {"movie": _key(movie), "question": question, "answer": result.get("answer", "I couldn't find that in Roy's movie notes."), "sources": result.get("sources", [])}
         except Exception as error:
             print(f"[Ask Roy] {type(error).__name__}: {error}")
             st.session_state["ask_roy_answer"] = {"movie": _key(movie), "question": question, "answer": "I couldn't find that in Roy's movie notes.", "sources": []}
+    log_interaction(user, movie.get("movie_id") or movie.get("tmdb_id"), "asked_roy")
     st.rerun()
 
 
-def render_ask_roy(movie):
+def render_ask_roy(movie, user=None):
     movie_key = _key(movie)
     if (st.session_state.get("ask_roy_answer") or {}).get("movie") not in (None, movie_key):
         st.session_state["ask_roy_answer"] = None
@@ -35,7 +40,7 @@ def render_ask_roy(movie):
     for index, question in enumerate(QUESTIONS):
         with choices[index % 2]:
             if st.button(question, key=f"ask_chip_{movie_key}_{index}", use_container_width=True):
-                _ask(movie, question)
+                _ask(movie, question, user)
     composer, send = st.columns([5, 1])
     with composer:
         custom = st.text_input("Ask your own question", placeholder="Ask Roy about this film", key=f"ask_input_{movie_key}")
@@ -44,7 +49,7 @@ def render_ask_roy(movie):
         send_clicked = st.button("Ask", key=f"ask_send_{movie_key}", type="primary", use_container_width=True)
     st.markdown("</section>", unsafe_allow_html=True)
     if send_clicked:
-        _ask(movie, custom)
+        _ask(movie, custom, user)
 
     answer = st.session_state.get("ask_roy_answer")
     if not answer or answer.get("movie") != movie_key:

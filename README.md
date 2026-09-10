@@ -1,598 +1,886 @@
-# RoyReview --- AI-Powered Personal Movie Review Platform
+**# RoyReview --- AI-Powered Personal Movie Review Platform**
 
-> **Internship Project \| Generative AI with LLMs \| Python \| Streamlit
-> \| MongoDB Atlas \| RAG \| ChromaDB \| Groq \| TMDB**
+\> \*\*Internship Project \\| Generative AI with LLMs \\| Python \\| Streamlit
+
+\> \\| MongoDB Atlas \\| RAG \\| ChromaDB \\| Groq \\| TMDB\*\*
 
 RoyReview is an AI-powered personal movie review platform that combines
+
 a real-world movie application with modern Generative AI techniques.
+
 Users can explore movies, view Roy's verified ratings and reviews,
-search films, and interact with **Ask Roy**, an AI assistant grounded in
+
+search films, and interact with **\*\*Ask Roy\*\***, an AI assistant grounded in
+
 RoyReview's movie-review knowledge base.
 
 This project was developed as a practical application of concepts
-learned during a **Generative AI with LLMs internship**, including
+
+learned during a **\*\*Generative AI with LLMs internship\*\***, including
+
 AI/NLP foundations, LLMs, prompt engineering, APIs, embeddings, vector
+
 databases, document processing, semantic search, Retrieval-Augmented
+
 Generation (RAG), hybrid search, evaluation, testing, and deployment.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 1. Project Overview
+**## 1. Project Overview**
 
-### Problem Statement
+**### Problem Statement**
 
 Movie information is widely available online, but a personal review
+
 platform has a different requirement: the system must preserve the
+
 reviewer's own opinions, ratings, verdicts, and writing style.
 
 Traditional keyword search can find a movie, but it cannot reliably
+
 answer questions such as:
 
--   Why did Roy give this movie a high rating?
--   What does Roy say about this movie?
--   Which movies does Roy consider Must Watch?
--   Which movies did Roy rate 5/5?
--   What is Roy's opinion of a particular film?
+\-   Why did Roy give this movie a high rating?
+
+\-   What does Roy say about this movie?
+
+\-   Which movies does Roy consider Must Watch?
+
+\-   Which movies did Roy rate 5/5?
+
+\-   What is Roy's opinion of a particular film?
 
 RoyReview solves this by combining structured database search with
+
 semantic retrieval and a Large Language Model.
 
-### Core Concept
+**### Core Concept**
 
-``` text
+\`\`\` text
+
 Movie Reviews
+
      ↓
+
 MongoDB Atlas
+
      ↓
+
 Confirmed Reviews
+
      ↓
+
 Document Preparation
+
      ↓
+
 Sentence Transformer Embeddings
+
      ↓
+
 ChromaDB
+
      ↓
+
 Semantic Retrieval
+
      ↓
+
 Relevant Context
+
      ↓
+
 Prompt Engineering
+
      ↓
+
 Groq LLM
+
      ↓
+
 Ask Roy Answer
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-## 2. Project Objectives
+**------------------------------------------------------------------------**
 
-1.  Build a complete working movie-review web application.
-2.  Store movie and review information using MongoDB Atlas.
-3.  Integrate TMDB for movie metadata and posters.
-4.  Maintain a verified personal movie-review knowledge base.
-5.  Convert confirmed reviews into semantic embeddings.
-6.  Store embeddings in a vector database.
-7.  Implement Retrieval-Augmented Generation.
-8.  Build a grounded AI assistant called **Ask Roy**.
-9.  Prevent the AI from inventing Roy's opinions.
-10. Add authentication and administrative review management.
-11. Support exact structured search as well as semantic search.
-12. Test the application using pytest.
-13. Prepare the application for cloud deployment.
-14. Demonstrate practical implementation of Generative AI concepts
+**## 2. Project Objectives**
+
+1\.  Build a complete working movie-review web application.
+
+2\.  Store movie and review information using MongoDB Atlas.
+
+3\.  Integrate TMDB for movie metadata and posters.
+
+4\.  Maintain a verified personal movie-review knowledge base.
+
+5\.  Convert confirmed reviews into semantic embeddings.
+
+6\.  Store embeddings in a vector database.
+
+7\.  Implement Retrieval-Augmented Generation.
+
+8\.  Build a grounded AI assistant called **\*\*Ask Roy\*\***.
+
+9\.  Prevent the AI from inventing Roy's opinions.
+
+10\. Add authentication and administrative review management.
+
+11\. Support exact structured search as well as semantic search.
+
+12\. Test the application using pytest.
+
+13\. Prepare the application for cloud deployment.
+
+14\. Demonstrate practical implementation of Generative AI concepts
+
     learned during the internship.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 3. What I Learned During the Internship
+**# 3. What I Learned During the Internship**
 
-## 3.1 AI and NLP Foundations
+**## 3.1 AI and NLP Foundations**
 
 I learned how Natural Language Processing allows applications to work
+
 with human language.
 
 Key concepts:
 
--   Text representation
--   Semantic meaning
--   Text similarity
--   Natural-language queries
--   Information retrieval
--   Vector representations
--   NLP-based search
+\-   Text representation
 
-### Application in RoyReview
+\-   Semantic meaning
+
+\-   Text similarity
+
+\-   Natural-language queries
+
+\-   Information retrieval
+
+\-   Vector representations
+
+\-   NLP-based search
+
+**### Application in RoyReview**
 
 Movie reviews are natural-language documents. RoyReview converts them
+
 into semantic vector representations so that user questions can be
+
 matched to relevant reviews based on meaning rather than only exact
+
 keywords.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 3.2 Large Language Models
+**## 3.2 Large Language Models**
 
 I learned the fundamentals of Large Language Models and how LLM APIs can
+
 be integrated into applications.
 
 Important concepts:
 
--   System prompts
--   User prompts
--   Context
--   Temperature
--   Token limits
--   API-based inference
--   Grounded generation
+\-   System prompts
 
-### Application
+\-   User prompts
+
+\-   Context
+
+\-   Temperature
+
+\-   Token limits
+
+\-   API-based inference
+
+\-   Grounded generation
+
+**### Application**
 
 RoyReview uses a Groq-hosted LLM for the final natural-language response
+
 generated by Ask Roy.
 
 The model does not independently determine Roy's opinion. Relevant
+
 review information is retrieved first and supplied as context.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 3.3 Prompt Engineering
+**## 3.3 Prompt Engineering**
 
 I learned how prompt design can control the behavior of an LLM.
 
 The Ask Roy system prompt defines:
 
--   The role of the assistant
--   The allowed information
--   The source of truth
--   Unsupported-answer behavior
--   Response style
--   Hallucination restrictions
+\-   The role of the assistant
+
+\-   The allowed information
+
+\-   The source of truth
+
+\-   Unsupported-answer behavior
+
+\-   Response style
+
+\-   Hallucination restrictions
 
 Important rules include:
 
--   Never invent Roy's opinion.
--   Never create an unsupported rating.
--   Never claim Roy reviewed a movie unless it appears in the knowledge
+\-   Never invent Roy's opinion.
+
+\-   Never create an unsupported rating.
+
+\-   Never claim Roy reviewed a movie unless it appears in the knowledge
+
     base.
--   Keep Roy's opinion separate from general movie facts.
--   Use retrieved context as the source of truth.
--   Say **"I couldn't find that in Roy's movie notes."** when the
+
+\-   Keep Roy's opinion separate from general movie facts.
+
+\-   Use retrieved context as the source of truth.
+
+\-   Say **\*\*"I couldn't find that in Roy's movie notes."\*\*** when the
+
     context does not support an answer.
 
 This demonstrates practical prompt engineering and grounded generation.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 3.4 Embeddings
+**## 3.4 Embeddings**
 
 I learned that text can be converted into numerical vectors called
+
 embeddings.
 
 Embeddings make it possible to compare text according to semantic
+
 meaning.
 
 RoyReview uses:
 
-``` text
+\`\`\` text
+
 Sentence Transformers
+
 Model: all-MiniLM-L6-v2
-```
+
+\`\`\`
 
 A complete confirmed review is converted into an embedding.
 
 For example:
 
-``` text
+\`\`\` text
+
 Movie: Jai Bhim
+
 Year: 2021
+
 Genre: Crime/Thriller
+
 Roy's Rating: 4.5/5
+
 Verdict: Must Watch
+
 Roy's Review: ...
-```
+
+\`\`\`
 
 The user's question is also converted into an embedding, after which the
+
 system searches for semantically relevant review documents.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 3.5 Vector Databases
+**## 3.5 Vector Databases**
 
 I learned why vector databases are important for modern AI applications.
 
 They provide capabilities for:
 
--   Storing embeddings
--   Similarity search
--   Semantic retrieval
--   Metadata filtering
--   RAG applications
+\-   Storing embeddings
 
-RoyReview uses **ChromaDB** as its persistent vector database.
+\-   Similarity search
+
+\-   Semantic retrieval
+
+\-   Metadata filtering
+
+\-   RAG applications
+
+RoyReview uses **\*\*ChromaDB\*\*** as its persistent vector database.
 
 Collection:
 
-``` text
-royreview_reviews
-```
+\`\`\` text
 
-The current implementation contains **84 embedded confirmed review
-documents**.
+royreview\_reviews
 
-------------------------------------------------------------------------
+\`\`\`
 
-## 3.6 Retrieval-Augmented Generation
+The current implementation contains \*\*84 embedded confirmed review
+
+documents\*\*.
+
+**------------------------------------------------------------------------**
+
+**## 3.6 Retrieval-Augmented Generation**
 
 RAG was one of the most important concepts applied in this project.
 
 RAG combines:
 
-``` text
+\`\`\` text
+
 Retrieval + Generation
-```
+
+\`\`\`
 
 Instead of asking an LLM to answer only from its general knowledge,
+
 RoyReview first retrieves relevant information from Roy's private review
+
 knowledge base.
 
-### RAG Pipeline
+**### RAG Pipeline**
 
-``` text
+\`\`\` text
+
 User Question
+
       ↓
+
 Question Embedding
+
       ↓
+
 ChromaDB Similarity Search
+
       ↓
+
 Top Relevant Reviews
+
       ↓
+
 Context Construction
+
       ↓
+
 System Prompt + User Prompt
+
       ↓
+
 Groq LLM
+
       ↓
+
 Grounded Answer
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-## 3.7 Hybrid Search
+**------------------------------------------------------------------------**
+
+**## 3.7 Hybrid Search**
 
 I learned that vector search is not ideal for every question.
 
 For example:
 
-``` text
+\`\`\` text
+
 Which movies did Roy rate 5/5?
-```
+
+\`\`\`
 
 is primarily a structured database query.
 
 RoyReview therefore uses two query paths.
 
-### Exact Queries
+**### Exact Queries**
 
 MongoDB handles:
 
--   Rating filters
--   Verdict filters
--   Minimum ratings
--   Structured movie lists
+\-   Rating filters
 
-### Semantic Queries
+\-   Verdict filters
+
+\-   Minimum ratings
+
+\-   Structured movie lists
+
+**### Semantic Queries**
 
 ChromaDB handles:
 
--   Why questions
--   Opinion-related questions
--   Natural-language review questions
--   Semantic similarity
+\-   Why questions
 
-### Hybrid Architecture
+\-   Opinion-related questions
 
-``` text
+\-   Natural-language review questions
+
+\-   Semantic similarity
+
+**### Hybrid Architecture**
+
+\`\`\` text
+
                     User Question
+
                           ↓
+
                     Query Router
+
                     ↙          ↘
+
              Exact Query     Semantic Query
+
                   ↓                ↓
+
               MongoDB          Embedding
+
                   ↓                ↓
+
              Exact Data        ChromaDB
+
                     ↘          ↙
+
                     Final Answer
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-## 3.8 Document Processing
+**------------------------------------------------------------------------**
+
+**## 3.8 Document Processing**
 
 I learned that information should be transformed into consistent
+
 retrieval units before being indexed.
 
 RoyReview creates a structured review document containing:
 
--   Movie title
--   Year
--   Zone
--   Genre
--   Roy's rating
--   Verdict
--   Roy's review
+\-   Movie title
+
+\-   Year
+
+\-   Zone
+
+\-   Genre
+
+\-   Roy's rating
+
+\-   Verdict
+
+\-   Roy's review
 
 This makes retrieval more consistent and gives the LLM useful metadata
+
 alongside the review text.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 3.9 Fine-Tuning vs Prompting and RAG
+**## 3.9 Fine-Tuning vs Prompting and RAG**
 
 I learned the difference between fine-tuning and runtime knowledge
+
 injection.
 
-### Fine-Tuning
+**### Fine-Tuning**
 
 Adapts a model using additional training data.
 
-### Prompting + RAG
+**### Prompting + RAG**
 
 Provides instructions and relevant knowledge at runtime.
 
 RoyReview uses RAG because Roy's movie-review knowledge base is
+
 relatively small and can change as new reviews are added.
 
 This allows new reviews to be added and indexed without retraining an
+
 LLM.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 3.10 LLM Evaluation
+**## 3.10 LLM Evaluation**
 
 I learned that a fluent AI response is not automatically a correct
+
 response.
 
 AI applications need evaluation for:
 
--   Retrieval quality
--   Context relevance
--   Grounding
--   Correctness
--   Hallucination
--   Application reliability
+\-   Retrieval quality
+
+\-   Context relevance
+
+\-   Grounding
+
+\-   Correctness
+
+\-   Hallucination
+
+\-   Application reliability
 
 RoyReview separates deterministic application logic from the LLM layer
+
 and tests the important components independently.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 3.11 AI Application Development
+**## 3.11 AI Application Development**
 
 I learned how to move from an AI concept or chatbot demo to a complete
+
 software product.
 
 RoyReview combines:
 
-``` text
+\`\`\` text
+
 UI
-+
+
+\+
+
 Authentication
-+
+
+\+
+
 Database
-+
+
+\+
+
 External API
-+
+
+\+
+
 Embeddings
-+
+
+\+
+
 Vector Database
-+
+
+\+
+
 RAG
-+
+
+\+
+
 LLM
-+
+
+\+
+
 Testing
-+
+
+\+
+
 Deployment Preparation
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-## 3.12 Testing and Engineering
+**------------------------------------------------------------------------**
+
+**## 3.12 Testing and Engineering**
 
 I learned the importance of automated testing before deployment.
 
 RoyReview uses:
 
-``` text
+\`\`\` text
+
 pytest
-```
+
+\`\`\`
 
 Final automated test result:
 
-``` text
+\`\`\` text
+
 18 passed, 1 warning
-```
+
+\`\`\`
 
 The warning was a ChromaDB/Python deprecation warning and did not cause
+
 test failure.
 
 Python compilation was also checked using:
 
-``` bash
+\`\`\` bash
+
 python -m compileall -q .
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-## 3.13 Deployment and Secret Management
+**------------------------------------------------------------------------**
+
+**## 3.13 Personalization and Interaction Intelligence
+
+RoyReview also implements a lightweight personalization layer based on user
+interaction history.
+
+The system records best-effort, non-blocking interaction events such as:
+
+- `viewed`
+- `searched`
+- `asked_roy`
+- `favorited`
+
+MongoDB is used to build a preference profile from these interactions. Genre
+and zone preferences are weighted according to interaction type and are used
+as an additional signal in recommendation ranking.
+
+Personalization is enabled after a minimum interaction threshold. New users
+continue to receive the generic movie list until enough interaction history
+exists.
+
+This demonstrates how application behavior can be combined with AI-assisted
+recommendation logic without making personalization a blocking dependency.
+
+---
+
+## 3.14 Deployment and Secret Management**
 
 I learned how to prepare an AI application for deployment.
 
 Important practices:
 
--   requirements management
--   Git/GitHub
--   environment configuration
--   secret management
--   API integration
--   cloud deployment preparation
+\-   requirements management
+
+\-   Git/GitHub
+
+\-   environment configuration
+
+\-   secret management
+
+\-   API integration
+
+\-   cloud deployment preparation
 
 API keys and database credentials are kept outside the Git repository
+
 using Streamlit secrets.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 4. Full RoyReview Feature Set
+**# 4. Full RoyReview Feature Set**
 
-## 4.1 User Authentication
+**## 4.1 User Authentication**
 
 RoyReview provides:
 
--   Signup
--   Login
--   Session-based authentication
--   Logout
--   Admin authentication
--   Protected application pages
+\-   Signup
+
+\-   Login
+
+\-   Session-based authentication
+
+\-   Logout
+
+\-   Admin authentication
+
+\-   Protected application pages
 
 Normal users and administrative functionality are separated.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 4.2 Movie Dashboard
+**## 4.2 Movie Dashboard**
 
 The main interface provides:
 
--   Movie posters
--   Film names
--   Release years
--   Zones
--   Genres
--   Roy's ratings
--   Verdicts
--   Personal reviews
--   Search functionality
+\-   Movie posters
 
-------------------------------------------------------------------------
+\-   Film names
 
-## 4.3 Movie Search
+\-   Release years
+
+\-   Zones
+
+\-   Genres
+
+\-   Roy's ratings
+
+\-   Verdicts
+
+\-   Personal reviews
+
+\-   Search functionality
+
+**------------------------------------------------------------------------**
+
+**## 4.3 Movie Search**
 
 Users can search movies by title.
 
 Movie records are retrieved from MongoDB and can be enriched with TMDB
+
 metadata when required.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 4.4 Movie Details
+**## 4.4 Movie Details**
 
 The detail page provides:
 
--   Large movie poster
--   Movie title
--   Year
--   Zone
--   Genre
--   Roy's rating
--   Verdict
--   IMDb information when available
--   Roy's personal review
--   Ask Roy interface
+\-   Large movie poster
 
-------------------------------------------------------------------------
+\-   Movie title
 
-## 4.5 Roy's Rating System
+\-   Year
+
+\-   Zone
+
+\-   Genre
+
+\-   Roy's rating
+
+\-   Verdict
+
+\-   IMDb information when available
+
+\-   Roy's personal review
+
+\-   Ask Roy interface
+
+**------------------------------------------------------------------------**
+
+**## 4.5 Roy's Rating System**
 
 RoyReview uses a 5-point personal rating scale.
 
 Examples:
 
-``` text
+\`\`\` text
+
 5/5
+
 4.5/5
+
 4/5
+
 3.5/5
+
 ...
-```
+
+\`\`\`
 
 Roy's rating is kept separate from external movie ratings.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 4.6 Verdict System
+**## 4.7 Verdict System**
 
 Three personal verdict categories are used:
 
-### Must Watch
+**### Must Watch**
 
 A strong recommendation.
 
-### Good Watch
+**### Good Watch**
 
 A positive recommendation.
 
-### Don't Watch
+**### Don't Watch**
 
 A movie Roy does not recommend according to his review.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 4.7 Personal Reviews
+**## 4.8 Personal Reviews**
 
 Each confirmed movie contains a concise personal review.
 
 Reviews focus on areas such as:
 
--   Story
--   Screenplay
--   Acting
--   Songs
--   Emotional impact
--   Entertainment value
--   Rewatchability
--   Overall filmmaking
+\-   Story
 
-------------------------------------------------------------------------
+\-   Screenplay
 
-## 4.8 TMDB Integration
+\-   Acting
+
+\-   Songs
+
+\-   Emotional impact
+
+\-   Entertainment value
+
+\-   Rewatchability
+
+\-   Overall filmmaking
+
+**------------------------------------------------------------------------**
+
+**## 4.9 Movie Analytics
+
+RoyReview includes an analytics dashboard for exploring the review dataset.
+
+It provides visual summaries such as:
+
+- Rating distribution
+- Verdict distribution
+- Genre and zone patterns
+- Year-wise trends
+- Highest-rated movies
+- Review statistics
+
+The analytics layer is kept separate from the core movie and RAG services so
+that visualization failures do not affect the main application flow.
+
+---
+
+## 4.9 TMDB Integration**
 
 RoyReview integrates with TMDB to retrieve:
 
--   TMDB ID
--   Movie title
--   Original title
--   Overview
--   Release date
--   Runtime
--   Genres
--   TMDB rating
--   Vote count
--   Poster
--   Backdrop
--   IMDb ID when available
+\-   TMDB ID
 
-### Important Design Decision
+\-   Movie title
+
+\-   Original title
+
+\-   Overview
+
+\-   Release date
+
+\-   Runtime
+
+\-   Genres
+
+\-   TMDB rating
+
+\-   Vote count
+
+\-   Poster
+
+\-   Backdrop
+
+\-   IMDb ID when available
+
+**### Important Design Decision**
 
 TMDB's rating and Roy's rating are stored separately.
 
 The external rating is never presented as Roy's personal rating.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 5. Ask Roy --- Generative AI Assistant
+**# 5. Ask Roy --- Generative AI Assistant**
 
-## 5.1 Purpose
+**## 5.1 Purpose**
 
-**Ask Roy** is the main Generative AI feature of the platform.
+**\*\*Ask Roy\*\*** is the main Generative AI feature of the platform.
 
 Users can ask natural-language questions about Roy's movie-review
+
 knowledge base.
 
 Examples:
 
-``` text
+\`\`\` text
+
 Why did Roy give this rating?
 
 What does Roy say about this movie?
@@ -602,20 +890,22 @@ Which movies does Roy consider Must Watch?
 Which movies did Roy rate 5/5?
 
 Tell me about Roy's opinion of Jai Bhim.
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-## 5.2 Quick Questions
+**------------------------------------------------------------------------**
+
+**## 5.2 Quick Questions**
 
 The interface provides predefined questions so users can interact with
+
 Ask Roy easily.
 
 Users can also enter custom questions.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 5.3 Grounded Answers
+**## 5.3 Grounded Answers**
 
 Ask Roy is designed to avoid hallucinating personal opinions.
 
@@ -623,1219 +913,1754 @@ The AI uses retrieved reviews as its source of truth.
 
 When information is unavailable, it should respond:
 
-``` text
+\`\`\` text
+
 I couldn't find that in Roy's movie notes.
-```
+
+\`\`\`
 
 This makes the system more reliable than a general-purpose chatbot for
+
 this specific knowledge base.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 5.4 Movie-Specific RAG
+**## 5.4 Movie-Specific RAG**
 
 When Ask Roy is opened from a movie detail page, retrieval can be
+
 restricted to the selected movie.
 
 Example:
 
-``` text
+\`\`\` text
+
 Selected Movie: Jai Bhim
+
 Question: Why did Roy give this rating?
+
               ↓
+
 Retrieve Jai Bhim Review
+
               ↓
+
 Build Context
+
               ↓
+
 Groq LLM
+
               ↓
+
 Grounded Answer
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-# 6. Admin Dashboard
+**------------------------------------------------------------------------**
+
+**# 6. Admin Dashboard**
 
 The Admin Dashboard allows management of the movie-review knowledge
+
 base.
 
 It provides:
 
--   Total movie count
--   Confirmed review count
--   Add New Review workflow
--   Review management
--   RAG ingestion workflow
+\-   Total movie count
 
-------------------------------------------------------------------------
+\-   Confirmed review count
 
-## 6.1 Add New Review
+\-   Add New Review workflow
+
+\-   Review management
+
+\-   RAG ingestion workflow
+
+**------------------------------------------------------------------------**
+
+**## 6.1 Add New Review**
 
 The administrator can add:
 
--   Movie title
--   Year
--   Zone
--   Genre
--   Roy's rating
--   Verdict
--   Review text
+\-   Movie title
+
+\-   Year
+
+\-   Zone
+
+\-   Genre
+
+\-   Roy's rating
+
+\-   Verdict
+
+\-   Review text
 
 TMDB can then be used for movie metadata enrichment.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 6.2 Review Approval Workflow
+**## 6.2 Review Approval Workflow**
 
 RoyReview separates confirmed opinions from AI-generated candidates.
 
 Candidate reviews can have:
 
-``` text
-review_status = NEEDS_USER_APPROVAL
-ingest_to_rag = NO
-```
+\`\`\` text
+
+review\_status = NEEDS\_USER\_APPROVAL
+
+ingest\_to\_rag = NO
+
+\`\`\`
 
 Only confirmed reviews are allowed into the RAG knowledge base.
 
 This prevents unapproved AI-generated text from becoming part of Roy's
+
 personal opinion database.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## 6.3 RAG Rebuilding
+**## 6.3 RAG Rebuilding**
 
 The project includes a rebuilding workflow:
 
-``` text
+\`\`\` text
+
 MongoDB Confirmed Reviews
+
         ↓
+
 Review Document Preparation
+
         ↓
+
 Embedding Generation
+
         ↓
+
 ChromaDB Upsert
+
         ↓
+
 RAG Knowledge Base Updated
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-# 7. System Architecture
+**------------------------------------------------------------------------**
 
-``` text
+**# 7. System Architecture**
+
+\`\`\` text
+
                          ┌──────────────────┐
+
                          │       User       │
+
                          └────────┬─────────┘
+
                                   ↓
+
                          ┌──────────────────┐
+
                          │   Streamlit UI   │
+
                          └────────┬─────────┘
+
                                   │
+
              ┌────────────────────┼────────────────────┐
+
              ↓                    ↓                    ↓
+
       Authentication        Movie Search          Ask Roy
+
              ↓                    ↓                    ↓
+
         Auth Logic          MongoDB Atlas         QA Router
+
                                   │                ↙      ↘
+
                                   ↓               ↓        ↓
+
                                  TMDB          MongoDB   ChromaDB
+
                               Metadata         Exact     Semantic
+
                                                   Search  Search
+
                                                         ↓
+
                                                Retrieved Context
+
                                                         ↓
+
                                                  Prompt Builder
+
                                                         ↓
+
                                                    Groq LLM
+
                                                         ↓
+
                                                  AI Response
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-# 8. RAG Architecture
+**------------------------------------------------------------------------**
 
-``` text
+**# 8. RAG Architecture**
+
+\`\`\` text
+
              CONFIRMED MOVIE REVIEWS
+
                        ↓
+
               Review Document
+
                   Preparation
+
                        ↓
+
               Sentence Transformer
+
                all-MiniLM-L6-v2
+
                        ↓
+
                   Embeddings
+
                        ↓
+
                    ChromaDB
+
                        ↑
+
                        │
+
                 Similarity Search
+
                        ↑
+
                        │
+
                  User Question
+
                        ↓
+
               Question Embedding
+
                        ↓
+
                Top-K Retrieval
+
                        ↓
+
                Context Builder
+
                        ↓
+
            System Prompt + Context
+
                        ↓
+
                     Groq LLM
+
                        ↓
+
                 Grounded Answer
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-# 9. Database Design
+**------------------------------------------------------------------------**
 
-## MongoDB Atlas
+**# 9. Database Design**
+
+**## MongoDB Atlas**
 
 Database:
 
-``` text
+\`\`\` text
+
 royreview
-```
+
+\`\`\`
 
 Collection:
 
-``` text
+\`\`\` text
+
 movies
-```
+
+\`\`\`
 
 Important fields include:
 
-``` text
-movie_id
+\`\`\` text
+
+movie\_id
+
 title
+
 year
+
 zone
+
 genre
-roy_rating
+
+roy\_rating
+
 verdict
-review_text
-review_status
-ingest_to_rag
-tmdb_id
-poster_url
-tmdb_overview
-tmdb_rating
-imdb_id
-```
+
+review\_text
+
+review\_status
+
+ingest\_to\_rag
+
+tmdb\_id
+
+poster\_url
+
+tmdb\_overview
+
+tmdb\_rating
+
+imdb\_id
+
+\`\`\`
 
 MongoDB acts as the primary source for application movie data.
 
-------------------------------------------------------------------------
+RoyReview also maintains a user-interaction collection for best-effort
+personalization events and preference-profile calculation.
 
-# 10. Vector Database Design
+**------------------------------------------------------------------------**
+
+**# 10. Vector Database Design**
 
 ChromaDB collection:
 
-``` text
-royreview_reviews
-```
+\`\`\` text
+
+royreview\_reviews
+
+\`\`\`
 
 Each record contains:
 
-``` text
+\`\`\` text
+
 ID
+
 Review Document
+
 Embedding
+
 Metadata
-```
+
+\`\`\`
 
 Metadata includes:
 
-``` text
-movie_id
+\`\`\` text
+
+movie\_id
+
 title
+
 year
+
 zone
+
 genre
-roy_rating
+
+roy\_rating
+
 verdict
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-# 11. External API Integration
+**------------------------------------------------------------------------**
 
-## TMDB
+**# 11. External API Integration**
+
+**## TMDB**
 
 Used for movie metadata, posters, backdrops, and IMDb IDs when
+
 available.
 
-## Groq
+**## Groq**
 
 Used to access the LLM for Ask Roy.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 12. Technology Stack
+**# 12. Technology Stack**
 
   Layer               Technology
-  ------------------- ---------------------------
+
+  **------------------- ---------------------------**
+
   Language            Python
+
   UI                  Streamlit
+
   Database            MongoDB Atlas
+
   Movie Metadata      TMDB API
+
   LLM Provider        Groq
-  LLM Model           `openai/gpt-oss-120b`
-  Embedding Model     `all-MiniLM-L6-v2`
+
+  LLM Model           \`openai/gpt-oss-120b\`
+
+  Embedding Model     \`all-MiniLM-L6-v2\`
+
   Embedding Library   Sentence Transformers
+
   Vector Database     ChromaDB
+
   Testing             pytest
+
   Version Control     Git / GitHub
+
   Deployment Target   Streamlit Community Cloud
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 13. Project Structure
+**# 13. Project Structure**
 
-``` text
+\`\`\` text
+
 RoyReview/
+
 ├── app.py
+
 ├── config/
-│   ├── __init__.py
+
+│   ├── \_\_init\_\_.py
+
 │   └── settings.py
+
 ├── database/
-│   ├── __init__.py
+
+│   ├── \_\_init\_\_.py
+
 │   ├── mongodb.py
+
 │   └── models.py
+
 ├── auth/
-│   ├── __init__.py
+
+│   ├── \_\_init\_\_.py
+
 │   ├── login.py
+
 │   ├── signup.py
+
 │   └── security.py
+
 ├── movies/
-│   ├── __init__.py
-│   ├── movie_service.py
+
+│   ├── \_\_init\_\_.py
+
+│   ├── movie\_service.py
+
 │   ├── tmdb.py
+
 │   └── imdb.py
+
 ├── rag/
-│   ├── __init__.py
+
+│   ├── \_\_init\_\_.py
+
 │   ├── embeddings.py
-│   ├── vector_store.py
+
+│   ├── vector\_store.py
+
 │   ├── retriever.py
+
 │   ├── prompts.py
+
 │   ├── qa.py
+
 │   ├── ingest.py
+
 │   └── hybrid.py
+
 ├── ai/
-│   ├── __init__.py
+
+│   ├── \_\_init\_\_.py
+
 │   ├── llm.py
+
 │   ├── recommender.py
+
 │   └── agent.py
+
 ├── ui/
-│   ├── __init__.py
+
+│   ├── \_\_init\_\_.py
+
 │   ├── home.py
+
 │   ├── dashboard.py
-│   ├── movie_details.py
-│   ├── ask_roy.py
+
+│   ├── movie\_details.py
+
+│   ├── ask\_roy.py
+
 │   └── explore.py
+
 ├── data/
+
 ├── scripts/
-│   ├── import_movies.py
-│   ├── build_embeddings.py
-│   └── rebuild_embeddings.py
+
+│   ├── import\_movies.py
+
+│   ├── build\_embeddings.py
+
+│   └── rebuild\_embeddings.py
+
 ├── tests/
-│   ├── test_auth.py
-│   ├── test_movies.py
-│   ├── test_database.py
-│   └── test_rag.py
+
+│   ├── test\_auth.py
+
+│   ├── test\_movies.py
+
+│   ├── test\_database.py
+
+│   └── test\_rag.py
+
 ├── utils/
-│   ├── __init__.py
+
+│   ├── \_\_init\_\_.py
+
 │   └── helpers.py
+
 ├── .streamlit/
+
 │   └── secrets.toml
+
 ├── requirements.txt
+
 ├── .gitignore
+
 └── README.md
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-# 14. Security and Secret Management
+**------------------------------------------------------------------------**
+
+**# 14. Security and Secret Management**
 
 Sensitive credentials are not stored directly in the source code.
 
 Local secrets are stored in:
 
-``` text
-.streamlit/secrets.toml
-```
+\`\`\` text
 
-and excluded from Git using `.gitignore`.
+.streamlit/secrets.toml
+
+\`\`\`
+
+and excluded from Git using \`.gitignore\`.
 
 Production deployment should use Streamlit's secret-management system.
 
 Architecture:
 
-``` text
+\`\`\` text
+
 Source Code → GitHub
+
 Secrets     → Secure Secret Configuration
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-# 15. Testing
+**------------------------------------------------------------------------**
+
+**# 15. Testing**
 
 RoyReview uses pytest for automated testing.
 
 Final result:
 
-``` text
+\`\`\` text
+
 18 passed, 1 warning
-```
+
+\`\`\`
 
 Testing covers important application areas such as:
 
--   Authentication
--   Movie functionality
--   Database behavior
--   RAG components
+\-   Authentication
+
+\-   Movie functionality
+
+\-   Database behavior
+
+\-   RAG components
+
+**### Manual RAG Evaluation Before Deployment**
+
+The labeled Ask Roy evaluation set lives in
+
+\`tests/rag\_eval/eval\_set.json\`. It includes grounded questions,
+
+unsupported questions, and ambiguous title inputs. Because this run calls
+
+the Groq API, it is intentionally a manual pre-deploy step rather than a
+
+test that runs with every \`pytest\` command:
+
+\`\`\`bash
+
+python scripts/run\_rag\_eval.py
+
+\`\`\`
+
+To compare the bounded Ask Roy agent against the baseline RAG path, run:
+
+\`\`\`bash
+
+python scripts/run\_rag\_eval.py --agent
+
+\`\`\`
+
+The report shows retrieval precision/recall, context relevance, answer
+
+faithfulness, answer correctness, and hallucination rate. Review any
+
+\`CHECK\` result before deploying changes to retrieval, prompts, or models.
 
 Python compilation was also verified:
 
-``` bash
+\`\`\` bash
+
 python -m compileall -q .
-```
+
+\`\`\`
 
 No compilation errors were reported.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 16. Integration Verification
+**# 16. Integration Verification**
 
-## TMDB Verification
+**## TMDB Verification**
 
 A TMDB enrichment test successfully returned:
 
--   TMDB ID
--   Poster URL
--   Movie title
--   Overview
--   TMDB rating
--   IMDb ID
+\-   TMDB ID
 
-------------------------------------------------------------------------
+\-   Poster URL
 
-## ChromaDB Verification
+\-   Movie title
+
+\-   Overview
+
+\-   TMDB rating
+
+\-   IMDb ID
+
+**------------------------------------------------------------------------**
+
+**## ChromaDB Verification**
 
 The vector database was populated successfully.
 
 Current verified count:
 
-``` text
+\`\`\` text
+
 84 documents
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-## Retriever Verification
+**------------------------------------------------------------------------**
+
+**## Retriever Verification**
 
 A movie-specific retrieval test successfully retrieved the Jai Bhim
+
 review containing:
 
-``` text
+\`\`\` text
+
 Roy's Rating: 4.5/5
+
 Verdict: Must Watch
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-## LLM Verification
+**------------------------------------------------------------------------**
+
+**## LLM Verification**
 
 A test question:
 
-``` text
+\`\`\` text
+
 Why did Roy give this rating?
-```
+
+\`\`\`
 
 successfully generated a grounded response using the retrieved Jai Bhim
+
 review.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 17. Challenges and Solutions
+**# 17. Challenges and Solutions**
 
-## Challenge 1 --- Preventing Hallucination
+**## Challenge 1 --- Preventing Hallucination**
 
-### Problem
+**### Problem**
 
 An LLM can generate plausible information that is not part of Roy's
+
 actual reviews.
 
-### Solution
+**### Solution**
 
 Use RAG and a strict grounding prompt. The retrieved review context is
+
 treated as the source of truth.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## Challenge 2 --- Exact vs Semantic Questions
+**## Challenge 2 --- Exact vs Semantic Questions**
 
-### Problem
+**### Problem**
 
 Vector similarity is not the best method for exact rating or verdict
+
 filtering.
 
-### Solution
+**### Solution**
 
 Use MongoDB for structured queries and ChromaDB for semantic retrieval.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## Challenge 3 --- Unapproved AI Reviews
+**## Challenge 3 --- Unapproved AI Reviews**
 
-### Problem
+**### Problem**
 
 AI-generated draft reviews should not automatically become Roy's
+
 opinions.
 
-### Solution
+**### Solution**
 
 Use explicit review status and RAG ingestion status.
 
 Only confirmed reviews are indexed.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## Challenge 4 --- External Movie Metadata
+**## Challenge 4 --- External Movie Metadata**
 
-### Problem
+**### Problem**
 
 Movie records require reliable posters and metadata.
 
-### Solution
+**### Solution**
 
 A dedicated TMDB service was created for searching and enriching movie
+
 records.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## Challenge 5 --- ML Dependency Compatibility
+**## Challenge 5 --- ML Dependency Compatibility**
 
-### Problem
+**### Problem**
 
 The embedding stack required compatible Python machine-learning
+
 dependencies.
 
-### Solution
+**### Solution**
 
 The required ML dependencies were configured and tested until the
+
 embedding and RAG workflow executed successfully.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## Challenge 6 --- Testing AI Systems
+**## Challenge 6 --- Testing AI Systems**
 
-### Problem
+**### Problem**
 
 LLM output can be variable and is harder to test like normal
+
 deterministic functions.
 
-### Solution
+**### Solution**
 
 Separate deterministic retrieval/database logic from generation and test
+
 the application components independently.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 18. Key Technical Decisions
+**# 18. Key Technical Decisions**
 
-## Why MongoDB?
+**## Why MongoDB?**
 
 MongoDB is suitable for the application's structured but flexible
+
 movie-review documents and provides a cloud-hosted Atlas database.
 
-## Why ChromaDB?
+**## Why ChromaDB?**
 
 ChromaDB provides persistent vector storage and similarity search
+
 suitable for a student-scale RAG application.
 
-## Why Sentence Transformers?
+**## Why Sentence Transformers?**
 
 Sentence Transformers provides efficient semantic text embeddings for
+
 review retrieval.
 
-## Why RAG?
+**## Why RAG?**
 
 The objective is not to train an LLM to become Roy.
 
 Instead:
 
-``` text
-Roy's Verified Reviews
-        ↓
-Stored in Database
-        ↓
-Retrieved when relevant
-        ↓
-Provided to LLM as Context
-        ↓
-LLM Explains the Context
-```
+\`\`\` text
 
-## Why Groq?
+Roy's Verified Reviews
+
+        ↓
+
+Stored in Database
+
+        ↓
+
+Retrieved when relevant
+
+        ↓
+
+Provided to LLM as Context
+
+        ↓
+
+LLM Explains the Context
+
+\`\`\`
+
+**## Why Groq?**
 
 Groq provides API access to LLMs suitable for interactive AI
+
 applications.
 
-## Why Streamlit?
+**## Why Streamlit?**
 
 Streamlit makes it possible to build an interactive Python AI
+
 application quickly while keeping the project architecture manageable.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 19. Most Important AI Design Principle
+**# 19. Most Important AI Design Principle**
 
-RoyReview treats **personal opinion as controlled data**.
+RoyReview treats **\*\*personal opinion as controlled data\*\***.
 
 The system does not allow the AI to freely create an opinion on behalf
+
 of Roy.
 
 Correct flow:
 
-``` text
+\`\`\` text
+
 Confirmed Roy Review
+
         ↓
+
 Embedding
+
         ↓
+
 RAG Knowledge Base
+
         ↓
+
 Retrieved Evidence
+
         ↓
+
 LLM Explanation
-```
+
+\`\`\`
 
 Incorrect flow:
 
-``` text
+\`\`\` text
+
 LLM Generates Opinion
+
         ↓
+
 Pretends It Belongs to Roy
-```
+
+\`\`\`
 
 This separation is an important reliability feature.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 20. Internship Concepts Applied to the Project
+**# 20. Internship Concepts Applied to the Project**
 
   What I Learned          How I Applied It
-  ----------------------- ---------------------------------------
+
+  **----------------------- ---------------------------------------**
+
   AI / NLP                Natural-language movie questions
+
   Text Similarity         Semantic review retrieval
+
   LLMs                    Groq LLM
+
   Prompt Engineering      Ask Roy system prompt
+
   Embeddings              Sentence Transformers
+
   Vector Databases        ChromaDB
+
   RAG                     Retrieved reviews + LLM
+
   Document Processing     Structured review documents
+
   Semantic Search         Vector similarity
+
   Hybrid Search           MongoDB + ChromaDB
+
   LLM API Integration     Groq
+
   Grounding               Retrieved context as source of truth
+
   Hallucination Control   Strict prompt + fallback
+
   Evaluation              Retrieval and application tests
+
   Database                MongoDB Atlas
+
   External APIs           TMDB
+
   Authentication          Signup / Login / Admin
+
   Testing                 pytest
+
   Version Control         Git / GitHub
+
   Deployment              Streamlit Community Cloud preparation
+Personalization         Interaction-based preference profiles
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 21. Project Data
+**# 21. Project Data**
 
-The application contains **100+ movie records**.
+The application contains **\*\*100+ movie records\*\***.
 
 The dataset includes:
 
--   Confirmed reviews
--   AI-draft candidate reviews
--   Movie metadata
--   Posters
--   Review status
--   RAG ingestion status
+\-   Confirmed reviews
+
+\-   AI-draft candidate reviews
+
+\-   Movie metadata
+
+\-   Posters
+
+\-   Review status
+
+\-   RAG ingestion status
 
 Only confirmed reviews are treated as Roy's actual opinions.
 
 This separation protects the integrity of the personal knowledge base.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 22. UI / UX Design
+**# 22. UI / UX Design**
 
 RoyReview uses a modern, clean and premium movie-focused interface.
 
 Primary visual palette:
 
-``` text
+\`\`\` text
+
 Background : #F4F4F4
+
 Dark       : #393A3A
+
 Secondary  : #575959
+
 Soft Blue  : #B8D5E5
+
 Primary    : #F89344
+
 Accent     : #FF642F
+
 Text       : #17181C
+
 White      : #FFFFFF
-```
+
+\`\`\`
 
 The interface focuses on:
 
--   Clean layouts
--   Strong movie imagery
--   Clear ratings
--   Simple navigation
--   Premium typography
--   Responsive interaction
--   Integrated AI experience
+\-   Clean layouts
 
-------------------------------------------------------------------------
+\-   Strong movie imagery
 
-# 23. Main User Flow
+\-   Clear ratings
 
-``` text
+\-   Simple navigation
+
+\-   Premium typography
+
+\-   Responsive interaction
+
+\-   Integrated AI experience
+
+**------------------------------------------------------------------------**
+
+**# 23. Main User Flow**
+
+\`\`\` text
+
 Home
+
  ↓
+
 Search Movie
+
  ↓
+
 Movie Result
+
  ↓
+
 Movie Details
+
  ↓
+
 Rating + Verdict + Review
+
  ↓
+
 Ask Roy
+
  ↓
+
 RAG Retrieval
+
  ↓
+
 AI Answer
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-# 24. Admin Flow
+**------------------------------------------------------------------------**
 
-``` text
+**# 24. Admin Flow**
+
+\`\`\` text
+
 Admin Login
+
      ↓
+
 Admin Dashboard
+
      ↓
+
 Add New Review
+
      ↓
+
 TMDB Enrichment
+
      ↓
+
 Confirm Review
+
      ↓
+
 Generate Embedding
+
      ↓
+
 ChromaDB
+
      ↓
+
 Available to Ask Roy
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-# 25. End-to-End Example: Jai Bhim
+**------------------------------------------------------------------------**
 
-For the movie **Jai Bhim**, RoyReview stores:
+**# 25. End-to-End Example: Jai Bhim**
 
-``` text
+For the movie **\*\*Jai Bhim\*\***, RoyReview stores:
+
+\`\`\` text
+
 Rating: 4.5/5
+
 Verdict: Must Watch
-```
+
+\`\`\`
 
 and a verified personal review describing the film as a standout
+
 achievement in Tamil cinema and praising its filmmaking.
 
 A user asks:
 
-``` text
-Why did Roy give this rating?
-```
+\`\`\` text
 
-### Step 1 --- Question
+Why did Roy give this rating?
+
+\`\`\`
+
+**### Step 1 --- Question**
 
 Ask Roy receives the question.
 
-### Step 2 --- Embedding
+**### Step 2 --- Embedding**
 
 The question is converted into a vector using:
 
-``` text
-all-MiniLM-L6-v2
-```
+\`\`\` text
 
-### Step 3 --- Retrieval
+all-MiniLM-L6-v2
+
+\`\`\`
+
+**### Step 3 --- Retrieval**
 
 ChromaDB finds the relevant Jai Bhim review.
 
-### Step 4 --- Context
+**### Step 4 --- Context**
 
 The retrieved document contains:
 
-``` text
-Movie: Jai Bhim
-Rating: 4.5/5
-Verdict: Must Watch
-Roy's Review: ...
-```
+\`\`\` text
 
-### Step 5 --- Prompt
+Movie: Jai Bhim
+
+Rating: 4.5/5
+
+Verdict: Must Watch
+
+Roy's Review: ...
+
+\`\`\`
+
+**### Step 5 --- Prompt**
 
 The review is inserted into the controlled Ask Roy prompt.
 
-### Step 6 --- Generation
+**### Step 6 --- Generation**
 
 The Groq LLM generates an explanation using the supplied context.
 
-### Step 7 --- Result
+**### Step 7 --- Result**
 
 The user receives a natural-language explanation grounded in Roy's
+
 verified review.
 
 Complete pipeline:
 
-``` text
+\`\`\` text
+
 Question
+
    ↓
+
 Embedding
+
    ↓
+
 Retrieval
+
    ↓
+
 Context
+
    ↓
+
 Prompt
+
    ↓
+
 LLM
+
    ↓
+
 Answer
-```
 
-------------------------------------------------------------------------
+\`\`\`
 
-# 26. Why RoyReview Is More Than a Chatbot
+**------------------------------------------------------------------------**
+
+**# 26. Why RoyReview Is More Than a Chatbot**
 
 RoyReview is a complete application rather than only an LLM demo.
 
-### Product Layer
+**### Product Layer**
 
-``` text
+\`\`\` text
+
 Authentication
+
 Movie Search
+
 Movie Details
+
 Movie Reviews
+
 Ratings
+
 Verdicts
+
 Admin Dashboard
+
 TMDB Integration
-```
 
-### AI Layer
+\`\`\`
 
-``` text
+**### AI Layer**
+
+\`\`\` text
+
 Embeddings
+
 Vector Database
+
 Semantic Retrieval
+
 RAG
+
 Prompt Engineering
+
 LLM
+
 Grounded QA
-```
 
-### Engineering Layer
+\`\`\`
 
-``` text
+**### Engineering Layer**
+
+\`\`\` text
+
 Modular Architecture
+
 Testing
+
 Git/GitHub
+
 Secret Management
+
 Deployment Preparation
-```
+
+\`\`\`
 
 This demonstrates both software-engineering and Generative-AI skills.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 27. Current Project Metrics
+**# 27. Current Project Metrics
 
-  Metric                   Status
-  ------------------------ -------------
-  Movie Records            100+
-  Confirmed Reviews        80+
-  RAG Documents            84
-  Authentication           Implemented
-  Admin Dashboard          Implemented
-  Movie Search             Implemented
-  Movie Details            Implemented
-  TMDB Integration         Implemented
-  Ask Roy                  Implemented
-  Embeddings               Implemented
-  ChromaDB                 Implemented
-  RAG                      Implemented
-  Hybrid Search            Implemented
-  Automated Tests          18
-  Test Result              18 Passed
-  GitHub                   Configured
-  Deployment Preparation   Completed
+| Metric | Status |
+|---|---|
+| Movie Records | 100+ |
+| Confirmed Reviews | 80+ |
+| RAG Documents | 84 |
+| Authentication | Implemented |
+| Admin Dashboard | Implemented |
+| Movie Search | Implemented |
+| Movie Details | Implemented |
+| TMDB Integration | Implemented |
+| Ask Roy | Implemented |
+| Embeddings | Implemented |
+| ChromaDB | Implemented |
+| RAG | Implemented |
+| Hybrid Search | Implemented |
+| Content-Based Recommendations | Implemented |
+| Hybrid Recommendation Scoring | Implemented |
+| Movie Analytics | Implemented |
+| Interaction Logging | Implemented |
+| User Preference Profiles | Implemented |
+| Personalization Signal | Implemented |
+| Bounded Agentic RAG | Implemented |
+| Automated Tests | 70 |
+| Latest Test Result | 70 Passed |
+| Python Compilation | Passed |
+| GitHub | Configured |
+| Deployment Preparation | Completed |
 
-------------------------------------------------------------------------
+### Current Engineering Note
+
+The automated suite is green, but the RAG evaluation harness is intentionally
+kept separate from pytest because it calls the Groq API. Its metrics should be
+reviewed before deploying changes to retrieval, prompts, or models.
 
 # 28. Future Scope
 
-## 28.1 AI Movie Recommendation
+Several major capabilities are already implemented in the current project,
+including hybrid recommendations, an agentic RAG path, movie analytics, and
+user personalization. Future work should therefore focus on improving these
+systems rather than presenting them as unimplemented features.
 
-Build a recommendation engine using:
+## 28.1 RAG Quality Optimization
 
--   Roy's ratings
--   Genres
--   Semantic similarity
--   Movie metadata
--   User preferences
+The evaluation harness shows strong retrieval performance but leaves room for
+improving answer faithfulness and correctness. Future work can include:
 
-------------------------------------------------------------------------
+- Better answer grounding
+- Stronger unsupported-question handling
+- More robust title resolution
+- Better ambiguity handling
+- More deterministic agent routing
+- Expanded evaluation datasets
 
 ## 28.2 Advanced Recommendation
 
-Combine:
+Future recommendation improvements can include:
 
-``` text
-Content Similarity
-+
-Embedding Similarity
-+
-Roy's Ratings
-+
-Genre Preference
-```
+- Learned ranking models
+- Better semantic preference modeling
+- Time-aware interaction weighting
+- More detailed user preference signals
+- Offline ranking evaluation
 
-to generate more personalized recommendations.
+## 28.3 Advanced Personalization
 
-------------------------------------------------------------------------
+The current system uses interaction-based genre and zone preferences. Future
+versions could incorporate:
 
-## 28.3 AI Agent
+- Longer-term watch history
+- Rating behavior
+- Favorite genres
+- Favorite actors
+- Favorite directors
+- Semantic preference profiles
 
-A future Ask Roy agent could:
+## 28.4 Advanced Analytics
 
-``` text
-Understand User Intent
-        ↓
-Select Tool
-        ↓
-Search Movies
-        ↓
-Retrieve Reviews
-        ↓
-Apply Filters
-        ↓
-Generate Answer
-```
+Future analytics can include:
 
-------------------------------------------------------------------------
+- Review-theme extraction
+- Sentiment trends
+- Temporal preference analysis
+- Recommendation evaluation dashboards
+- User-behavior analytics
 
-## 28.4 Advanced RAG Evaluation
+## 28.5 Production Deployment
 
-Future versions can measure:
+Future production work can include:
 
--   Retrieval precision
--   Retrieval recall
--   Context relevance
--   Answer faithfulness
--   Answer correctness
--   Hallucination rate
+- Streamlit Community Cloud deployment
+- Production secret configuration
+- Monitoring and logging
+- Dependency/version hardening
+- Performance optimization
+- Persistent production vector-store strategy
 
-------------------------------------------------------------------------
-
-## 28.5 Movie Analytics
-
-Possible dashboards:
-
--   Rating distribution
--   Verdict distribution
--   Genre preferences
--   Zone-wise ratings
--   Year-wise trends
--   Highest-rated movies
--   Review themes
-
-------------------------------------------------------------------------
-
-## 28.6 Personalized User Recommendations
-
-A future version can use user behavior such as:
-
--   Watch history
--   Ratings
--   Favorite genres
--   Favorite actors
--   Favorite directors
--   Semantic preferences
-
-to provide personalized recommendations.
-
-------------------------------------------------------------------------
-
-# 29. Deployment Architecture
+# 29. Deployment Architecture**
 
 RoyReview is prepared for deployment using Streamlit Community Cloud.
 
-``` text
+\`\`\` text
+
 GitHub
+
    ↓
+
 Streamlit Community Cloud
+
    ↓
+
 RoyReview Application
+
    ↓
+
 MongoDB Atlas
+
    ↓
+
 TMDB API
+
    ↓
+
 Groq API
+
    ↓
+
 RAG / ChromaDB
-```
+
+\`\`\`
 
 Secrets should be configured through the deployment platform rather than
+
 committed to GitHub.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 30. Recommended PPT Structure
+**# 30. Recommended PPT Structure**
 
 This README can directly serve as the technical source for an
+
 internship/project presentation.
 
-### Slide 1 --- Title
+**### Slide 1 --- Title**
 
-**RoyReview**\
+**\*\*RoyReview\*\***\\
+
 AI-Powered Personal Movie Review Platform
 
-### Slide 2 --- Problem Statement
+**### Slide 2 --- Problem Statement**
 
 Explain why normal movie search cannot answer questions about a personal
+
 reviewer's opinions.
 
-### Slide 3 --- Objectives
+**### Slide 3 --- Objectives**
 
 Present the project's major goals.
 
-### Slide 4 --- Proposed Solution
+**### Slide 4 --- Proposed Solution**
 
 Show the complete system architecture.
 
-### Slide 5 --- Technology Stack
+**### Slide 5 --- Technology Stack**
 
-``` text
+\`\`\` text
+
 Python
+
 Streamlit
+
 MongoDB Atlas
+
 TMDB
+
 Sentence Transformers
+
 ChromaDB
+
 Groq
+
 pytest
+
 GitHub
-```
 
-### Slide 6 --- Application Features
+\`\`\`
 
--   Authentication
--   Movie Search
--   Movie Details
--   Ratings
--   Verdicts
--   Reviews
--   Admin Dashboard
+**### Slide 6 --- Application Features**
 
-### Slide 7 --- Generative AI Features
+\-   Authentication
 
--   Ask Roy
--   Embeddings
--   Semantic Search
--   RAG
--   Prompt Engineering
--   Grounded Answers
+\-   Movie Search
 
-### Slide 8 --- RAG Architecture
+\-   Movie Details
 
-``` text
+\-   Ratings
+
+\-   Verdicts
+
+\-   Reviews
+
+\-   Admin Dashboard
+
+**### Slide 7 --- Generative AI Features**
+
+\-   Ask Roy
+
+\-   Embeddings
+
+\-   Semantic Search
+
+\-   RAG
+
+\-   Prompt Engineering
+
+\-   Grounded Answers
+
+**### Slide 8 --- RAG Architecture**
+
+\`\`\` text
+
 Question
- ↓
-Embedding
- ↓
-ChromaDB
- ↓
-Relevant Review
- ↓
-Prompt
- ↓
-Groq LLM
- ↓
-Answer
-```
 
-### Slide 9 --- Hybrid Search
+ ↓
+
+Embedding
+
+ ↓
+
+ChromaDB
+
+ ↓
+
+Relevant Review
+
+ ↓
+
+Prompt
+
+ ↓
+
+Groq LLM
+
+ ↓
+
+Answer
+
+\`\`\`
+
+**### Slide 9 --- Hybrid Search**
 
 Explain MongoDB exact filtering versus ChromaDB semantic retrieval.
 
-### Slide 10 --- Grounding and Reliability
+**### Slide 10 --- Grounding and Reliability**
 
-``` text
+\`\`\` text
+
 Confirmed Reviews
+
        ↓
+
 RAG
+
        ↓
+
 Evidence-Based Answer
-```
 
-### Slide 11 --- Admin Workflow
+\`\`\`
 
-``` text
+**### Slide 11 --- Admin Workflow**
+
+\`\`\` text
+
 Add Review
+
  ↓
+
 Confirm
+
  ↓
+
 Embed
+
  ↓
+
 ChromaDB
-```
 
-### Slide 12 --- Testing
+\`\`\`
 
-``` text
+**### Slide 12 --- Testing**
+
+\`\`\` text
+
 18 Tests
-18 Passed
-```
 
-### Slide 13 --- Internship Learning
+18 Passed
+
+\`\`\`
+
+**### Slide 13 --- Internship Learning**
 
 Show the concepts learned and their practical implementation.
 
-### Slide 14 --- Challenges and Solutions
+**### Slide 14 --- Challenges and Solutions**
 
 Present the major development challenges and solutions.
 
-### Slide 15 --- Future Scope
+**### Slide 15 --- Future Scope**
 
--   AI Recommendations
--   AI Agent
--   Advanced RAG
--   Evaluation
--   Analytics
+\-   AI Recommendations
 
-### Slide 16 --- Conclusion
+\-   AI Agent
+
+\-   Advanced RAG
+
+\-   Evaluation
+
+\-   Analytics
+
+**### Slide 16 --- Conclusion**
 
 Explain how RoyReview demonstrates the practical application of
+
 Generative AI in a real software product.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 31. Suggested Evidence for Project Submission
+**# 31. Suggested Evidence for Project Submission**
 
 Recommended screenshots for a final report or PPT:
 
-1.  RoyReview landing page
-2.  Movie search result
-3.  Movie details page
-4.  Rating and verdict
-5.  Ask Roy interface
-6.  Ask Roy response
-7.  Admin Dashboard
-8.  Add Review form
-9.  MongoDB Atlas data
-10. ChromaDB/RAG verification
-11. Terminal showing `18 passed`
-12. GitHub repository
-13. Deployed application
+1\.  RoyReview landing page
+
+2\.  Movie search result
+
+3\.  Movie details page
+
+4\.  Rating and verdict
+
+5\.  Ask Roy interface
+
+6\.  Ask Roy response
+
+7\.  Admin Dashboard
+
+8\.  Add Review form
+
+9\.  MongoDB Atlas data
+
+10\. ChromaDB/RAG verification
+
+11\. Terminal showing \`18 passed\`
+
+12\. GitHub repository
+
+13\. Deployed application
 
 These screenshots demonstrate the implementation of both the product and
+
 the AI pipeline.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-# 32. Internship Learning Outcome
+**# 32. Internship Learning Outcome**
 
 Through RoyReview, I progressed from understanding Generative AI
+
 concepts theoretically to applying them in an end-to-end application.
 
 The major practical outcomes were:
 
--   Understanding how LLM applications are structured.
--   Designing effective prompts.
--   Converting text into embeddings.
--   Performing semantic retrieval.
--   Using a vector database.
--   Implementing RAG.
--   Combining structured and vector search.
--   Integrating external APIs.
--   Grounding LLM responses.
--   Controlling hallucination.
--   Testing AI application components.
--   Managing secrets securely.
--   Structuring a modular Python application.
--   Using Git and GitHub.
--   Preparing an application for cloud deployment.
+\-   Understanding how LLM applications are structured.
 
-------------------------------------------------------------------------
+\-   Designing effective prompts.
 
-# 33. Conclusion
+\-   Converting text into embeddings.
 
-**RoyReview demonstrates how Generative AI concepts can be transformed
-from internship learning topics into a practical software product.**
+\-   Performing semantic retrieval.
+
+\-   Using a vector database.
+
+\-   Implementing RAG.
+
+\-   Combining structured and vector search.
+
+\-   Integrating external APIs.
+
+\-   Grounding LLM responses.
+
+\-   Controlling hallucination.
+
+\-   Testing AI application components.
+
+\-   Managing secrets securely.
+
+\-   Structuring a modular Python application.
+
+\-   Using Git and GitHub.
+
+\-   Preparing an application for cloud deployment.
+
+**------------------------------------------------------------------------**
+
+**# 33. Conclusion**
+
+\*\*RoyReview demonstrates how Generative AI concepts can be transformed
+
+from internship learning topics into a practical software product.\*\*
 
 The project combines:
 
--   Natural Language Processing
--   Embeddings
--   Vector Search
--   Retrieval-Augmented Generation
--   Prompt Engineering
--   Large Language Models
--   External API Integration
--   MongoDB
--   Authentication
--   Automated Testing
--   Git/GitHub
--   Cloud Deployment Preparation
+\-   Natural Language Processing
+
+\-   Embeddings
+
+\-   Vector Search
+
+\-   Retrieval-Augmented Generation
+
+\-   Prompt Engineering
+
+\-   Large Language Models
+
+\-   External API Integration
+
+\-   MongoDB
+
+\-   Authentication
+
+\-   Automated Testing
+
+\-   Git/GitHub
+
+\-   Cloud Deployment Preparation
 
 The central design principle is:
 
-> **The LLM generates the explanation, but Roy's verified reviews remain
-> the source of truth.**
+\> \*\*The LLM generates the explanation, but Roy's verified reviews remain
+
+\> the source of truth.\*\*
 
 This makes RoyReview more than a movie-review website and more than a
+
 simple chatbot. It is an end-to-end demonstration of how Generative AI
+
 can be integrated into a real application with data management,
+
 retrieval, grounding, testing, and a user-facing product experience.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## Project Status
+**## Project Status**
 
-**Core Internship Implementation: Completed**
+**\*\*Core Internship Implementation: Completed\*\***
 
 The core application, authentication, movie database, TMDB integration,
+
 RAG pipeline, embeddings, ChromaDB vector search, Ask Roy assistant,
+
 hybrid search, admin workflow, automated testing, and GitHub setup are
+
 implemented.
 
 Future versions can extend the platform with advanced recommendation
+
 systems, AI agents, deeper RAG evaluation, analytics, and personalized
+
 user experiences.
 
-------------------------------------------------------------------------
+**------------------------------------------------------------------------**
 
-## Author
+**## Author**
 
-**Arpon Roy**
+**\*\*Arpon Roy\*\***
 
-B.Tech / CSE Student\
+B.Tech / CSE Student\\
+
 Generative AI & Software Development Project

@@ -16,13 +16,16 @@ def retrieve_reviews(
     if not question or not question.strip():
         return []
 
-    query_embedding = embed_text(question)
-
-    results = search_similar(
-        query_embedding=query_embedding,
-        n_results=top_k,
-        movie_title=movie_title,
-    )
+    try:
+        query_embedding = embed_text(question)
+        results = search_similar(
+            query_embedding=query_embedding,
+            n_results=top_k,
+            movie_title=movie_title,
+        )
+    except Exception as error:
+        print(f"[RAG Retrieval Error] {type(error).__name__}: {error}")
+        return []
 
     documents = results.get("documents", [[]])[0]
     metadatas = results.get("metadatas", [[]])[0]

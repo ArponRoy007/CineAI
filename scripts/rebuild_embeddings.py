@@ -25,11 +25,15 @@ from rag.ingest import ingest_movie_review
 
 def main():
 
-    movies = movies_collection.find(
-        {
-            "review_status": "CONFIRMED",
-        }
-    )
+    try:
+        movies = movies_collection.find(
+            {
+                "review_status": "CONFIRMED",
+            }
+        )
+    except Exception as error:
+        print(f"Could not load confirmed reviews: {type(error).__name__}: {error}")
+        return
 
     total = 0
     successful = 0

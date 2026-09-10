@@ -3,6 +3,8 @@ import re
 
 import streamlit as st
 
+from ai.personalization import build_preference_profile, log_interaction
+from ai.recommender import recommend_for_user
 from movies.tmdb import enrich_movie
 from ui.design import esc, inject_design_system, render_nav
 
@@ -21,7 +23,12 @@ def _stars(rating):
 
 
 def _movies(collection, query=None):
-    return list(collection.find(query or {}, PROJECTION).sort("roy_rating", -1))
+    try:
+        return list(collection.find(query or {}, PROJECTION).sort("roy_rating", -1))
+    except Exception as error:
+        print(f"[Movie Lookup Error] {type(error).__name__}: {error}")
+        st.warning("Movie data is temporarily unavailable. Please try again shortly.")
+        return []
 
 
 def _search(collection, query):
@@ -48,6 +55,25 @@ def _open_movie(movie):
     st.session_state["selected_movie"] = movie
     st.session_state["ask_roy_answer"] = None
     st.rerun()
+
+
+def _log_search_once(user, query):
+    user_id = str((user or {}).get("user_id") or "").strip()
+    normalized_query = str(query or "").strip()
+    if not user_id or not normalized_query:
+        return
+    key = f"{user_id}:{normalized_query.casefold()}"
+    if st.session_state.get("last_logged_search") != key:
+        log_interaction(user, None, "searched", query=normalized_query)
+        st.session_state["last_logged_search"] = key
+
+
+def choose_home_movies(movies, profile):
+    """Return personalized picks only when the user's history is sufficient."""
+    recommendations = recommend_for_user(movies, profile, limit=8)
+    if profile.get("ready") and recommendations:
+        return recommendations, True
+    return movies[:8], False
 
 
 def render_movie_card(collection, movie, key):
@@ -95,6 +121,7 @@ def render_home(collection, user=None):
     if searched or query.strip():
         st.session_state["home_query"] = query
         st.session_state["home_filter"] = None
+        _log_search_once(user, query)
 
     st.markdown('<div class="rr-section-head"><div><h2>Explore the collection</h2><p>Find the mood you are after.</p></div></div>', unsafe_allow_html=True)
     with st.container(key="verdict_segment"):
@@ -114,4 +141,10 @@ def render_home(collection, user=None):
     elif saved_query:
         _render_results(collection, _search(collection, saved_query), "Search results", "Roy's collection", saved_query)
     else:
-        _render_results(collection, _movies(collection)[:8], "Fresh from Roy", "A few films worth your time")
+        movies = _movies(collection)
+        profile = build_preference_profile(user)
+        home_movies, personalized = choose_home_movies(movies, profile)
+        if personalized:
+            _render_results(collection, home_movies, "Recommended for you", "Based on the films you have explored with Roy")
+        else:
+            _render_results(collection, home_movies, "Fresh from Roy", "A few films worth your time")

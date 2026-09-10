@@ -1,4 +1,13 @@
-from database.mongodb import movies_collection
+movies_collection = None
+
+
+def _movies_collection():
+    global movies_collection
+    if movies_collection is None:
+        from database.mongodb import get_movies_collection
+
+        movies_collection = get_movies_collection()
+    return movies_collection
 
 
 def get_exact_movies(
@@ -33,27 +42,31 @@ def get_exact_movies(
             "$gte": float(min_rating),
         }
 
-    return list(
-        movies_collection.find(
-            query,
-            {
-                "_id": 0,
-                "movie_id": 1,
-                "title": 1,
-                "year": 1,
-                "zone": 1,
-                "genre": 1,
-                "roy_rating": 1,
-                "verdict": 1,
-                "review_text": 1,
-            },
-        ).sort(
-            [
-                ("roy_rating", -1),
-                ("year", -1),
-            ]
+    try:
+        return list(
+            _movies_collection().find(
+                query,
+                {
+                    "_id": 0,
+                    "movie_id": 1,
+                    "title": 1,
+                    "year": 1,
+                    "zone": 1,
+                    "genre": 1,
+                    "roy_rating": 1,
+                    "verdict": 1,
+                    "review_text": 1,
+                },
+            ).sort(
+                [
+                    ("roy_rating", -1),
+                    ("year", -1),
+                ]
+            )
         )
-    )
+    except Exception as error:
+        print(f"[Exact Movie Lookup Error] {type(error).__name__}: {error}")
+        return []
 
 
 def format_exact_movies(movies):

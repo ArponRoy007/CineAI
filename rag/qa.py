@@ -131,23 +131,28 @@ def answer_question(
     # --------------------------------------------------
 
     if _is_exact_fact_question(question):
-        return _answer_exact_question(question)
+        try:
+            return _answer_exact_question(question)
+        except Exception as error:
+            print(f"[Ask Roy Exact Search Error] {type(error).__name__}: {error}")
+            return _grounding_fallback()
 
     # --------------------------------------------------
     # NORMAL RAG
     # --------------------------------------------------
 
-    context, sources = build_context(
-        question=question,
-        top_k=top_k,
-        movie_title=movie_title,
-    )
+    try:
+        context, sources = build_context(
+            question=question,
+            top_k=top_k,
+            movie_title=movie_title,
+        )
+    except Exception as error:
+        print(f"[Ask Roy Retrieval Error] {type(error).__name__}: {error}")
+        return _grounding_fallback()
 
     if not context:
-        return {
-            "answer": "I couldn't find that in Roy's movie notes.",
-            "sources": [],
-        }
+        return _grounding_fallback()
 
     from ai.llm import generate_answer
 
@@ -156,12 +161,23 @@ def answer_question(
         context=context,
     )
 
-    answer = generate_answer(
-        system_prompt=SYSTEM_PROMPT,
-        user_prompt=prompt,
-    )
+    try:
+        answer = generate_answer(
+            system_prompt=SYSTEM_PROMPT,
+            user_prompt=prompt,
+        )
+    except Exception as error:
+        print(f"[Ask Roy Groq Error] {type(error).__name__}: {error}")
+        return _grounding_fallback()
 
     return {
         "answer": answer,
         "sources": sources,
+    }
+
+
+def _grounding_fallback() -> dict:
+    return {
+        "answer": "I couldn't find that in Roy's movie notes.",
+        "sources": [],
     }
