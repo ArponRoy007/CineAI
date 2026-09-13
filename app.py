@@ -15,6 +15,14 @@ from ui.analytics import render_analytics
 st.set_page_config(page_title="RoyReview", page_icon="🎬", layout="wide", initial_sidebar_state="collapsed")
 inject_design_system()
 
+st.markdown("""
+<style>
+div[data-testid="stTextArea"] textarea {
+    color: #FFFFFF !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 for key, value in {"selected_movie": None, "logged_out": False, "auth_page": "login", "view": "home", "logout_requested": False}.items():
     st.session_state.setdefault(key, value)
 
@@ -65,7 +73,7 @@ def render_admin_dashboard(user):
                 zone = st.selectbox("Zone", ["Bollywood", "Tollywood", "Hollywood", "South Indian", "Bengali", "Other"])
                 verdict = st.selectbox("Verdict", ["Must Watch", "Good Watch", "Don't Watch"])
                 poster_url = st.text_input("Poster URL", placeholder="Optional")
-                review = st.text_area("Roy's review", max_chars=200, placeholder="Write Roy's personal review...")
+                review = st.text_area("Roy's review", max_chars=4000, placeholder="Write Roy's personal review...")
             submitted = st.form_submit_button("Save review", type="primary", use_container_width=True)
         if submitted:
             if not title.strip() or not review.strip():
