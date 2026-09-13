@@ -11,8 +11,24 @@ from ui.home import render_home
 from ui.movie_details import render_movie_details
 from ui.profile import render_edit_profile, render_profile
 from ui.analytics import render_analytics
+from rag.bootstrap import ensure_vector_store
 
-st.set_page_config(page_title="RoyReview", page_icon="🎬", layout="wide", initial_sidebar_state="collapsed")
+
+st.set_page_config(
+    page_title="RoyReview",
+    page_icon="🎬",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
+
+
+@st.cache_resource
+def initialize_vector_store():
+    return ensure_vector_store()
+
+
+initialize_vector_store()
+
 inject_design_system()
 
 st.markdown("""
