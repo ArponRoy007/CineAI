@@ -7,7 +7,7 @@
 ![LLM](https://img.shields.io/badge/Groq-GPT--OSS--120B-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-> CineAI (RoyReview) is an AI-powered personal movie review journal created by Arpon and Sonal. It bridges personal film criticism with modern Generative AI, Retrieval-Augmented Generation (RAG), vector similarity search, hybrid content recommendation, and real-time interaction analytics.
+> CineAI is an AI-powered personal movie review journal created by Arpon and Sonal. It bridges personal film criticism with modern Generative AI, Retrieval-Augmented Generation (RAG), vector similarity search, hybrid content recommendation, and real-time interaction analytics.
 
 ---
 
