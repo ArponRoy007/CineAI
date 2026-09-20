@@ -62,187 +62,191 @@ def render_recommendations(movie, user=None):
     for index, recommendation in enumerate(recommendations):
 
         with columns[index % len(columns)]:
+            # Keep the 3-column grid; shrink each card ~18% inside its cell.
+            _, card_col, _ = st.columns([0.09, 0.82, 0.09])
+            with card_col:
 
-            title = recommendation.get(
-                "title",
-                "Untitled",
-            )
-
-            poster = recommendation.get(
-                "poster_url"
-            )
-
-            verdict = recommendation.get(
-                "verdict",
-                "Roy's pick",
-            )
-
-            rating = recommendation.get(
-                "roy_rating",
-                "-",
-            )
-
-            year = recommendation.get(
-                "year",
-                "",
-            )
-
-            genre = recommendation.get(
-                "genre",
-                "Film",
-            )
-
-            score = recommendation.get(
-                "recommendation_score"
-            )
-
-            # -------------------------------------------------
-            # Poster
-            # -------------------------------------------------
-            if poster:
-                st.image(
-                    poster,
-                    use_container_width=True,
+                title = recommendation.get(
+                    "title",
+                    "Untitled",
                 )
-            else:
+
+                poster = recommendation.get(
+                    "poster_url"
+                )
+
+                verdict = recommendation.get(
+                    "verdict",
+                    "Roy's pick",
+                )
+
+                rating = recommendation.get(
+                    "roy_rating",
+                    "-",
+                )
+
+                year = recommendation.get(
+                    "year",
+                    "",
+                )
+
+                genre = recommendation.get(
+                    "genre",
+                    "Film",
+                )
+
+                score = recommendation.get(
+                    "recommendation_score"
+                )
+
+                # -------------------------------------------------
+                # Poster
+                # -------------------------------------------------
+                if poster:
+                    st.image(
+                        poster,
+                        use_container_width=True,
+                    )
+                else:
+                    st.html(
+                        f"""
+                        <div
+                            style="
+                                width:100%;
+                                height:198px;
+                                border-radius:12px;
+                                background:#393A3A;
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                color:#FFFFFF;
+                                font-weight:600;
+                                text-align:center;
+                                padding:16px;
+                                font-size:13px;
+                            "
+                        >
+                            {esc(title)}
+                        </div>
+                        """
+                    )
+
+                # -------------------------------------------------
+                # Compact card information
+                # -------------------------------------------------
+                score_html = ""
+
+                if score is not None:
+                    try:
+                        score_html = (
+                            f"""
+                            <div
+                                style="
+                                    margin-top:4px;
+                                    font-size:9px;
+                                    color:#7B8285;
+                                "
+                            >
+                                Match {float(score):.3f}
+                            </div>
+                            """
+                        )
+                    except (TypeError, ValueError):
+                        pass
+
                 st.html(
                     f"""
                     <div
                         style="
-                            width:100%;
-                            height:240px;
-                            border-radius:12px;
-                            background:#393A3A;
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            color:#FFFFFF;
-                            font-weight:600;
-                            text-align:center;
-                            padding:20px;
-                        "
-                    >
-                        {esc(title)}
-                    </div>
-                    """
-                )
-
-            # -------------------------------------------------
-            # Compact card information
-            # -------------------------------------------------
-            score_html = ""
-
-            if score is not None:
-                try:
-                    score_html = (
-                        f"""
-                        <div
-                            style="
-                                margin-top:5px;
-                                font-size:11px;
-                                color:#7B8285;
-                            "
-                        >
-                            Match {float(score):.3f}
-                        </div>
-                        """
-                    )
-                except (TypeError, ValueError):
-                    pass
-
-            st.html(
-                f"""
-                <div
-                    style="
-                        margin-top:9px;
-                        margin-bottom:8px;
-                    "
-                >
-
-                    <div
-                        style="
-                            display:flex;
-                            justify-content:space-between;
-                            align-items:center;
-                            gap:8px;
+                            margin-top:7px;
                             margin-bottom:6px;
                         "
                     >
 
-                        <span
+                        <div
                             style="
-                                display:inline-block;
-                                padding:4px 8px;
-                                border-radius:999px;
-                                background:#F89344;
-                                color:#FFFFFF;
-                                font-size:10px;
+                                display:flex;
+                                justify-content:space-between;
+                                align-items:center;
+                                gap:6px;
+                                margin-bottom:5px;
+                            "
+                        >
+
+                            <span
+                                style="
+                                    display:inline-block;
+                                    padding:3px 7px;
+                                    border-radius:999px;
+                                    background:#F89344;
+                                    color:#FFFFFF;
+                                    font-size:8px;
+                                    font-weight:700;
+                                    text-transform:uppercase;
+                                "
+                            >
+                                {esc(verdict)}
+                            </span>
+
+                            <span
+                                style="
+                                    font-size:10px;
+                                    font-weight:600;
+                                    color:#393A3A;
+                                    white-space:nowrap;
+                                "
+                            >
+                                {_stars(rating)}
+                                {esc(rating)}/5
+                            </span>
+
+                        </div>
+
+                        <div
+                            style="
+                                font-size:15px;
                                 font-weight:700;
-                                text-transform:uppercase;
+                                color:#17181C;
+                                line-height:1.2;
+                                margin-bottom:4px;
                             "
                         >
-                            {esc(verdict)}
-                        </span>
+                            {esc(title)}
+                        </div>
 
-                        <span
+                        <div
                             style="
-                                font-size:12px;
-                                font-weight:600;
-                                color:#393A3A;
-                                white-space:nowrap;
+                                font-size:10px;
+                                color:#7B8285;
+                                line-height:1.4;
                             "
                         >
-                            {_stars(rating)}
-                            {esc(rating)}/5
-                        </span>
+                            {esc(year)} · {esc(genre)}
+                        </div>
+
+                        {score_html}
 
                     </div>
+                    """
+                )
 
-                    <div
-                        style="
-                            font-size:18px;
-                            font-weight:700;
-                            color:#17181C;
-                            line-height:1.2;
-                            margin-bottom:5px;
-                        "
-                    >
-                        {esc(title)}
-                    </div>
+                movie_id = recommendation.get(
+                    "movie_id",
+                    recommendation.get(
+                        "_id",
+                        f"{title}_{index}",
+                    ),
+                )
 
-                    <div
-                        style="
-                            font-size:12px;
-                            color:#7B8285;
-                            line-height:1.4;
-                        "
-                    >
-                        {esc(year)} · {esc(genre)}
-                    </div>
-
-                    {score_html}
-
-                </div>
-                """
-            )
-
-            movie_id = recommendation.get(
-                "movie_id",
-                recommendation.get(
-                    "_id",
-                    f"{title}_{index}",
-                ),
-            )
-
-            if st.button(
-                "View review",
-                key=f"recommended_{movie_id}_{index}",
-                use_container_width=True,
-            ):
-                st.session_state["selected_movie"] = recommendation
-                st.session_state["ask_roy_answer"] = None
-                st.session_state["ask_roy_source"] = None
-                st.rerun()
+                if st.button(
+                    "View review",
+                    key=f"recommended_{movie_id}_{index}",
+                    use_container_width=True,
+                ):
+                    st.session_state["selected_movie"] = recommendation
+                    st.session_state["ask_roy_answer"] = None
+                    st.session_state["ask_roy_source"] = None
+                    st.rerun()
 
 
 def _log_view_once(movie, user):
@@ -381,7 +385,7 @@ def render_movie_details(movie, user=None):
                     class="rr-kicker"
                     style="color:#FFFFFF"
                 >
-                    Roy's rating
+                    Our rating
                 </div>
 
                 <div class="rr-rating-stars">

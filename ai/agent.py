@@ -242,7 +242,7 @@ def filter_by_verdict(verdict):
 # ============================================================
 
 def filter_by_rating(min_rating):
-    """Return confirmed movies with Roy's rating at or above a threshold."""
+    """Return confirmed movies with Our rating at or above a threshold."""
 
     try:
         minimum = float(min_rating)
@@ -765,7 +765,40 @@ def _force_movie_scope(call, movie_id, question):
         call.function.arguments or "{}"
     )
 
+def _has_grounded_evidence(tool_name, result):
+    """Return True only when a tool produced usable answer evidence."""
+    if not result or result.get("error"):
+        return False
 
+    data = result.get("data")
+
+    if tool_name == "retrieve_review":
+        return bool(
+            isinstance(data, dict)
+            and str(data.get("context", "")).strip()
+        )
+
+    if tool_name == "general_semantic_search":
+        return bool(
+            isinstance(data, dict)
+            and str(data.get("context", "")).strip()
+        )
+
+    if tool_name == "get_public_movie_info":
+        return bool(
+            isinstance(data, dict)
+            and data.get("source") == "TMDB"
+        )
+
+    # Structured RoyReview database queries are valid grounded evidence.
+    if tool_name in {
+        "search_movies",
+        "filter_by_verdict",
+        "filter_by_rating",
+    }:
+        return bool(data)
+
+    return False
 # ============================================================
 # ANSWER WITH AGENT
 # ============================================================
@@ -847,7 +880,7 @@ def answer_with_agent(
                 )
             )
 
-            if review_result.get("data"):
+            if _has_grounded_evidence("retrieve_review", review_result):
                 had_grounded_result = True
 
                 review_data = review_result["data"]
@@ -972,9 +1005,8 @@ def answer_with_agent(
                     )
                 )
 
-                if result.get("data"):
+                if _has_grounded_evidence(tool_name, result):
                     had_grounded_result = True
-
                 messages.append(
                     {
                         "role": "tool",

@@ -39,9 +39,19 @@ div.stButton>button[kind='primary']:hover, div[data-testid='stFormSubmitButton']
 .rr-empty,.rr-panel,.rr-admin-card { border-radius:var(--r-card); background:var(--white); padding:28px; }.rr-empty{text-align:center;color:var(--muted);}.rr-empty strong{display:block;color:var(--ink);font:700 20px 'Plus Jakarta Sans',sans-serif;margin-bottom:7px}
 .rr-details { background:var(--white);border-radius:var(--r-card);padding:32px;margin-top:16px }.rr-verdict{display:inline-block;color:var(--accent);font-size:12px;font-weight:800;text-transform:uppercase}.rr-movie-title{font:800 44px/1.08 'Plus Jakarta Sans',sans-serif;margin:10px 0}.rr-rating-block{background:var(--dark);color:var(--white);border-radius:var(--r-control);padding:18px 20px;margin:22px 0}.rr-rating-stars{color:var(--primary);font-size:27px;letter-spacing:2px}.rr-stats{display:flex;flex-wrap:wrap;gap:22px;margin:18px 0}.rr-stat label{display:block;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:1px}.rr-stat b{font-size:14px}.rr-quote{border-left:4px solid var(--primary);margin:28px 0;padding:4px 0 4px 20px;color:var(--muted);font-size:17px;line-height:1.75}.rr-quote:before{content:'“';color:var(--accent);font:800 48px/0 'Plus Jakarta Sans',sans-serif;vertical-align:-14px;margin-right:7px}
 .rr-ask{background:var(--blue);border-radius:var(--r-card);padding:28px;margin-top:28px}.rr-ask h2{font-size:26px;margin:8px 0}.rr-ask p{color:var(--dark);margin:0 0 18px}.rr-answer{background:var(--white);border-radius:var(--r-control);padding:20px;margin-top:18px}.rr-answer-q{font-size:12px;color:var(--muted);margin-bottom:10px}.rr-source{color:var(--muted);font-size:12px;margin-top:8px}
-.rr-auth-shell{max-width:420px;margin:72px auto}.rr-auth-card{background:var(--white);border-radius:var(--r-card);padding:34px;box-shadow:0 14px 36px rgba(57,58,58,.08)}.rr-auth-card h1{font-size:30px;margin:16px 0 6px}.rr-auth-card p{color:var(--muted);margin:0 0 22px}.rr-auth-tabs{background:var(--bg);padding:4px;border-radius:var(--r-control);margin-bottom:22px}.rr-auth-tabs div.stButton>button{border:0;background:transparent}.rr-auth-tabs .stButton:has(button[kind='primary']) button{background:var(--white)!important;color:var(--ink)!important;box-shadow:0 2px 8px rgba(57,58,58,.07)}
+.rr-auth-shell{max-width:920px;margin:72px auto}.rr-auth-shell-single{max-width:420px}.rr-auth-card{background:var(--white);border-radius:var(--r-card);padding:34px;box-shadow:0 14px 36px rgba(57,58,58,.08)}.rr-auth-card h1{font-size:30px;margin:16px 0 6px}.rr-auth-card p{color:var(--muted);margin:0 0 22px}.rr-auth-tabs{background:var(--bg);padding:4px;border-radius:var(--r-control);margin-bottom:22px}.rr-auth-tabs div.stButton>button{border:0;background:transparent}.rr-auth-tabs .stButton:has(button[kind='primary']) button{background:var(--white)!important;color:var(--ink)!important;box-shadow:0 2px 8px rgba(57,58,58,.07)}
+div[data-testid='stHorizontalBlock']:has(.rr-auth-brand){align-items:center}
 .rr-stat-card{background:var(--white);border-radius:var(--r-control);padding:18px}.rr-stat-card label{display:block;color:var(--muted);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px}.rr-stat-card strong{font:800 30px 'Plus Jakarta Sans',sans-serif}.rr-profile-avatar{width:88px;height:88px;border-radius:50%;object-fit:cover;background:var(--blue);display:grid;place-items:center;font:800 32px 'Plus Jakarta Sans',sans-serif}
-@media(max-width:700px){.block-container{padding:18px 16px 52px}.rr-nav-note{display:none}.rr-hero{padding:34px 26px;min-height:0}.rr-hero h1{font-size:34px}.rr-details{padding:20px}.rr-movie-title{font-size:34px}.rr-section-head{align-items:start;gap:8px;flex-direction:column}.st-key-verdict_segment .stButton{min-width:125px}.rr-auth-shell{margin:30px auto}.rr-auth-card{padding:24px}}
+.rr-footer{margin:48px 0 0;padding:28px 0 8px;border-top:1px solid var(--line);text-align:center}.rr-footer .rr-brand{font-size:16px;display:inline-block;margin-bottom:6px}.rr-footer-tagline{color:var(--muted);font-size:13px;margin:0 0 10px;line-height:1.5}.rr-footer-copy{color:var(--muted);font-size:12px;margin:0;opacity:.85}
+.rr-auth-tabs {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+@media(max-width:700px){.block-container{padding:18px 16px 52px}.rr-nav-note{display:none}.rr-hero{padding:34px 26px;min-height:0}.rr-hero h1{font-size:34px}.rr-details{padding:20px}.rr-movie-title{font-size:34px}.rr-section-head{align-items:start;gap:8px;flex-direction:column}.st-key-verdict_segment .stButton{min-width:125px}.rr-auth-shell{max-width:420px;margin:30px auto}.rr-auth-card{padding:24px}div[data-testid='stHorizontalBlock']:has(.rr-auth-brand){flex-direction:column!important;gap:18px}div[data-testid='stHorizontalBlock']:has(.rr-auth-brand)>div{width:100%!important;flex:1 1 100%!important}.rr-footer{margin-top:36px;padding-top:22px}}
+
 </style>
         """,
         unsafe_allow_html=True,
@@ -53,9 +63,9 @@ def render_nav(user):
     initial = esc(name[:1].upper())
     left, _, avatar = st.columns([.58, .28, .14], vertical_alignment="center")
     with left:
-        st.markdown('<div class="rr-brand">Roy<span>Review</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="rr-brand">Cine<span>AI</span></div>', unsafe_allow_html=True)
     with _:
-        st.markdown('<div class="rr-nav-note">Roy\'s personal movie journal</div>', unsafe_allow_html=True)
+        st.markdown('<div class="rr-nav-note">Our personal movie journal</div>', unsafe_allow_html=True)
     with avatar:
         with st.popover("Profile", use_container_width=True):
             st.markdown(f'<div class="rr-avatar">{initial}</div>', unsafe_allow_html=True)
@@ -65,3 +75,14 @@ def render_nav(user):
                 st.session_state["view"] = "edit_profile"; st.rerun()
             if st.button("Sign out", key="nav_logout", use_container_width=True):
                 st.session_state["logout_requested"] = True; st.rerun()
+
+
+def render_footer():
+    st.markdown(
+        '<div class="rr-footer">'
+        '<div class="rr-brand">Cine<span>AI</span></div>'
+        '<p class="rr-footer-tagline">Movies, from Our\'s perspective.</p>'
+        '<p class="rr-footer-copy">&copy; 2026 CineAI. All rights reserved.</p>'
+        "</div>",
+        unsafe_allow_html=True,
+    )

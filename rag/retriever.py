@@ -82,9 +82,9 @@ Movie: {title}
 Year: {year}
 Zone: {zone}
 Genre: {genre}
-Roy's Rating: {rating}/5
+Our Rating: {rating}/5
 Verdict: {verdict}
-Roy's Review: {document}"""
+Our Review: {document}"""
         )
 
     return "\n\n".join(context_parts), results

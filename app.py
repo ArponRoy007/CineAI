@@ -6,7 +6,7 @@ import streamlit as st
 from auth.login import current_user, is_admin, is_authenticated, logout_user, render_login
 from auth.signup import render_signup
 from database.mongodb import movies_collection
-from ui.design import inject_design_system, render_nav
+from ui.design import inject_design_system, render_footer, render_nav
 from ui.home import render_home
 from ui.movie_details import render_movie_details
 from ui.profile import render_edit_profile, render_profile
@@ -15,7 +15,7 @@ from rag.bootstrap import ensure_vector_store
 
 
 st.set_page_config(
-    page_title="RoyReview",
+    page_title="CineAI",
     page_icon="🎬",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -44,21 +44,51 @@ for key, value in {"selected_movie": None, "logged_out": False, "auth_page": "lo
 
 
 def render_auth_screen():
-    st.markdown('<div class="rr-auth-shell"><div class="rr-auth-card"><div class="rr-brand">Roy<span>Review</span></div><h1>Your next favourite is waiting.</h1><p>Sign in to explore Roy\'s reviews and ask about the films that stayed with him.</p><div class="rr-auth-tabs">', unsafe_allow_html=True)
-    left, right = st.columns(2)
-    with left:
-        if st.button("Sign in", type="primary" if st.session_state.auth_page == "login" else "secondary", use_container_width=True):
-            st.session_state.auth_page = "login"; st.rerun()
-    with right:
-        if st.button("Sign up", type="primary" if st.session_state.auth_page == "signup" else "secondary", use_container_width=True):
-            st.session_state.auth_page = "signup"; st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
-    if st.session_state.auth_page == "login":
-        render_login()
-    else:
-        render_signup()
-    st.markdown('</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="rr-auth-shell">', unsafe_allow_html=True)
 
+    brand_col, form_col = st.columns(
+        2,
+        vertical_alignment="center",
+        gap="large"
+    )
+
+    with brand_col:
+        st.markdown(
+            '<div class="rr-auth-card rr-auth-brand">'
+            '<div class="rr-brand">Cine<span>AI</span></div>'
+            "<h1>Your next favourite is waiting.</h1>"
+            "<p>Sign in to explore Our reviews and ask about the films that stayed with him.</p>"
+            "</div>",
+            unsafe_allow_html=True,
+        )
+
+    with form_col:
+        left, right = st.columns(2)
+
+        with left:
+            if st.button(
+                "Sign in",
+                type="primary" if st.session_state.auth_page == "login" else "secondary",
+                use_container_width=True,
+            ):
+                st.session_state.auth_page = "login"
+                st.rerun()
+
+        with right:
+            if st.button(
+                "Sign up",
+                type="primary" if st.session_state.auth_page == "signup" else "secondary",
+                use_container_width=True,
+            ):
+                st.session_state.auth_page = "signup"
+                st.rerun()
+
+        if st.session_state.auth_page == "login":
+            render_login()
+        else:
+            render_signup()
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 def render_admin_dashboard(user):
     render_nav(user)
@@ -84,16 +114,16 @@ def render_admin_dashboard(user):
                 title = st.text_input("Movie title", placeholder="Enter movie title")
                 year = st.number_input("Release year", min_value=1900, max_value=2100, value=2026)
                 genre = st.text_input("Genre", placeholder="Drama, thriller, romance...")
-                rating = st.selectbox("Roy's rating", [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1])
+                rating = st.selectbox("Our rating", [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1])
             with second:
                 zone = st.selectbox("Zone", ["Bollywood", "Tollywood", "Hollywood", "South Indian", "Bengali", "Other"])
                 verdict = st.selectbox("Verdict", ["Must Watch", "Good Watch", "Don't Watch"])
                 poster_url = st.text_input("Poster URL", placeholder="Optional")
-                review = st.text_area("Roy's review", max_chars=4000, placeholder="Write Roy's personal review...")
+                review = st.text_area("Our review", max_chars=4000, placeholder="Write your personal review...")
             submitted = st.form_submit_button("Save review", type="primary", use_container_width=True)
         if submitted:
             if not title.strip() or not review.strip():
-                st.error("Movie title and Roy's review are required.")
+                st.error("Movie title and Our review are required.")
             else:
                 movie_id = f"{re.sub(r'[^a-z0-9]+', '-', title.lower().strip()).strip('-')}-{int(year)}"
                 document = {"movie_id": movie_id, "title": title.strip(), "year": int(year), "zone": zone, "genre": genre.strip(), "poster_url": poster_url.strip(), "roy_rating": float(rating), "verdict": verdict, "review_text": review.strip(), "review_status": "CONFIRMED", "ingest_to_rag": False, "created_by": user.get("username", "admin"), "updated_at": datetime.now(timezone.utc)}
@@ -116,8 +146,8 @@ def render_admin_dashboard(user):
 
 
 def signed_out():
-    st.markdown('<div class="rr-auth-shell"><div class="rr-auth-card"><div class="rr-brand">Roy<span>Review</span></div><h1>See you next time.</h1><p>Your place in Roy\'s collection will be right here.</p></div></div>', unsafe_allow_html=True)
-    if st.button("Back to RoyReview", type="primary"):
+    st.markdown('<div class="rr-auth-shell rr-auth-shell-single"><div class="rr-auth-card"><div class="rr-brand">Cine<span>AI</span></div><h1>See you next time.</h1><p>Your place in Roy\'s collection will be right here.</p></div></div>', unsafe_allow_html=True)
+    if st.button("Back to CineAI", type="primary"):
         logout_user(); st.session_state.logged_out = False; st.rerun()
 
 
@@ -138,3 +168,5 @@ elif st.session_state.selected_movie:
     render_movie_details(st.session_state.selected_movie, current_user() or {})
 else:
     render_home(movies_collection, current_user() or {})
+
+render_footer()

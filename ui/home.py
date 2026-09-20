@@ -109,12 +109,12 @@ def _render_results(collection, movies, title, subtitle, empty_query=""):
 def render_home(collection, user=None):
     inject_design_system()
     render_nav(user)
-    st.markdown('''<section class="rr-hero"><div class="rr-kicker">Roy's personal movie journal</div>
-    <h1>Every film has a story.<br><span>Here's mine.</span></h1><p>Honest reviews, personal ratings, and the films that stayed long after the credits.</p></section>''', unsafe_allow_html=True)
+    st.markdown('''<section class="rr-hero"><div class="rr-kicker">Our personal movie journal</div>
+    <h1>Every film has a story.<br><span>Here's Ours.</span></h1><p>Honest reviews, personal ratings, and the films that stayed long after the credits.</p></section>''', unsafe_allow_html=True)
 
     search_col, action_col = st.columns([7, 1])
     with search_col:
-        query = st.text_input("Search Roy's collection", placeholder="Search a film", key="movie_search")
+        query = st.text_input("Search CineAi collection", placeholder="Search a film", key="movie_search")
     with action_col:
         st.markdown("<br>", unsafe_allow_html=True)
         searched = st.button("Search", type="primary", use_container_width=True)
@@ -145,6 +145,6 @@ def render_home(collection, user=None):
         profile = build_preference_profile(user)
         home_movies, personalized = choose_home_movies(movies, profile)
         if personalized:
-            _render_results(collection, home_movies, "Recommended for you", "Based on the films you have explored with Roy")
+            _render_results(collection, home_movies, "Recommended for you", "Based on the films you have explored with Roy and Karna")
         else:
             _render_results(collection, home_movies, "Fresh from Roy", "A few films worth your time")

@@ -133,7 +133,7 @@ def current_user() -> dict | None:
 def render_login() -> None:
     """Render the RoyReview login screen."""
 
-    st.markdown("## Welcome back to RoyReview")
+    st.markdown("## Welcome back to CineAI")
     st.caption("Sign in to continue.")
 
     with st.form("royreview_login_form"):

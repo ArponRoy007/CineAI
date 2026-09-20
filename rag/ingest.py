@@ -21,9 +21,9 @@ Movie: {title}
 Year: {year}
 Zone: {zone}
 Genre: {genre}
-Roy's Rating: {rating}/5
+Our Rating: {rating}/5
 Verdict: {verdict}
-Roy's Review: {review}
+Our Review: {review}
 """.strip()
 
 

@@ -48,9 +48,9 @@ Movie: Darr
 Year: 1993
 Zone: Bollywood
 Genre: Psychological Romance/Thriller
-Roy's Rating: 5/5
+Our Rating: 5/5
 Verdict: Must Watch
-Roy's Review: A memorable early performance.
+Our Review: A memorable early performance.
 """
 
     fake_sources = [

@@ -22,13 +22,13 @@ def render_profile(user):
     inject_design_system()
     render_nav(user)
     _back_home()
-    name = user.get("name") or user.get("username", "RoyReview member")
+    name = user.get("name") or user.get("username", "CineAI member")
     avatar = user.get("avatar_url", "")
     avatar_html = f'<img class="rr-profile-avatar" src="{esc(avatar)}" alt="{esc(name)}">' if avatar else f'<div class="rr-profile-avatar">{esc(name[:1].upper())}</div>'
     st.markdown(f'''<div class="rr-panel"><div style="display:flex;gap:20px;align-items:center">{avatar_html}<div><div class="rr-kicker">Profile</div><h1 style="margin:5px 0">{esc(name)}</h1><div class="rr-card-meta">@{esc(user.get("username"))} · {esc(user.get("email"))}</div></div></div></div>''', unsafe_allow_html=True)
     reviews = st.session_state.get("reviews_viewed", 0)
     cols = st.columns(3)
-    stats = [("Reviews viewed", reviews), ("Favorite genre", user.get("favorite_genre") or "Not set"), ("Member since", "RoyReview")]
+    stats = [("Reviews viewed", reviews), ("Favorite genre", user.get("favorite_genre") or "Not set"), ("Member since", "CineAI")]
     for col, (label, value) in zip(cols, stats):
         with col:
             st.markdown(f'<div class="rr-stat-card"><label>{esc(label)}</label><strong>{esc(value)}</strong></div>', unsafe_allow_html=True)
@@ -41,7 +41,7 @@ def render_edit_profile(user):
     inject_design_system()
     render_nav(user)
     _back_home()
-    st.markdown('<div class="rr-section-head"><div><h2>Edit profile</h2><p>Choose what RoyReview shows about you.</p></div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="rr-section-head"><div><h2>Edit profile</h2><p>Choose what CineAI shows about you.</p></div></div>', unsafe_allow_html=True)
     with st.form("edit_profile_form"):
         name = st.text_input("Display name", value=user.get("name", ""))
         username = st.text_input("Username", value=user.get("username", ""))

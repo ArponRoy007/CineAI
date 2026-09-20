@@ -292,7 +292,7 @@ def render_analytics(collection):
                 .encode(
                     x=alt.X(
                         "Rating:Q",
-                        title="Roy's rating",
+                        title="Our rating",
                         scale=alt.Scale(
                             domain=[0.5, 5.5]
                         ),

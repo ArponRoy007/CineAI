@@ -63,8 +63,8 @@ def create_user(
 def render_signup() -> None:
     """Render the RoyReview signup screen."""
 
-    st.markdown("## Create your RoyReview account")
-    st.caption("Join RoyReview to explore movies and Ask Roy.")
+    st.markdown("## Create your CineAI account")
+    st.caption("Join CineAI to explore movies and Ask Roy.")
 
     with st.form("royreview_signup_form"):
         name = st.text_input(
