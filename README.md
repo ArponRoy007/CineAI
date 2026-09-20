@@ -1,1075 +1,372 @@
-# RoyReview — AI-Powered Personalized Movie Reviews & Recommendations
+# CineAI : a personal AI-powered movie review platform
 
-> A personal movie-review platform enhanced with Generative AI, RAG, semantic search, hybrid recommendations, analytics, and interaction-based personalization.
+![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.63.0-FF4B4B)
+![Database](https://img.shields.io/badge/MongoDB-Atlas-4EA94B)
+![Vector DB](https://img.shields.io/badge/ChromaDB-1.5.9-orange)
+![LLM](https://img.shields.io/badge/Groq-GPT--OSS--120B-purple)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-**Built with:** Python · Streamlit · MongoDB Atlas · ChromaDB · Sentence Transformers · Groq · TMDB · pytest
+> CineAI (RoyReview) is an AI-powered personal movie review journal created by Arpon and Sonal. It bridges personal film criticism with modern Generative AI, Retrieval-Augmented Generation (RAG), vector similarity search, hybrid content recommendation, and real-time interaction analytics.
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Architecture Overview](#architecture-overview)
+- [Project Structure](#project-structure)
+- [Setup & Installation](#setup--installation)
+- [Usage Walkthrough](#usage-walkthrough)
+- [Screenshots](#screenshots)
+- [Future Scope](#future-scope)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
 ---
 
 ## Overview
 
-RoyReview is a full-stack-style Python/Streamlit movie-review application that combines a real movie product with a Generative AI layer.
+**CineAI** is a full-stack Python application built on **Streamlit** that transforms personal film journals into an interactive, intelligent movie discovery system. Designed specifically as a personal movie journal for Arpon and Sonal, the platform hosts curated reviews, numerical ratings (1–5 stars), verdict classifications (`Must Watch`, `Good Watch`, `Don't Watch`), and zone-based categorization.
 
-Users can:
-
-- Browse and search movies
-- View Roy's verified ratings, verdicts, and personal reviews
-- Explore movie details and external metadata
-- Get personalized movie recommendations
-- Ask **Ask Roy** natural-language questions about Roy's review knowledge base
-- Explore movie analytics
-- Build a lightweight personalized experience from interactions
-
-The central AI principle is simple:
-
-> **The LLM generates the explanation, but Roy's verified reviews remain the source of truth.**
-
-Only confirmed reviews are indexed into the RAG knowledge base. AI-generated draft reviews are kept separate until explicitly approved.
+### Core Philosophy
+* **Grounded Source of Truth:** Generative AI assists with explanation and conversation, but personal reviews recorded in MongoDB remain the definitive source of truth.
+* **Grounded RAG Guardrails:** The system prioritizes personal notes over public metadata, preventing hallucinated reviews or invented ratings.
+* **Hybrid Intelligence:** Structured MongoDB queries handle exact factual filters, while ChromaDB vector retrieval powers semantic, opinion-based Q&A.
 
 ---
 
 ## Key Features
 
-### 🎬 Movie Platform
-- Movie dashboard and search
-- Movie detail pages
-- Posters and metadata through TMDB
-- Roy's personal 5-point ratings
-- `Must Watch`, `Good Watch`, and `Don't Watch` verdicts
-- Personal review text
-- IMDb information when available
+### 🎬 Personal Review Journal & Explore
+* **Browsable Collection:** Explore detailed reviews, release years, zones (Bollywood, Tollywood, Hollywood, South Indian, Bengali, Other), and genre tags.
+* **Verdict Filtering:** Instant single-click filtering across `Must Watch`, `Good Watch`, and `Don't Watch` films.
+* **5-Star Rating System:** Granular 1 to 5 star personal rating scale with visual indicators.
+* **Search System:** Search across titles with real-time database matching.
 
-### 🤖 Ask Roy — Generative AI
-- Natural-language questions about Roy's movie reviews
-- Movie-specific RAG when opened from a movie page
-- Semantic retrieval using embeddings
-- Grounded prompt design
-- Unsupported-question fallback
-- Bounded agentic RAG with tool-based retrieval
+### 🤖 Ask CineAI (RAG & Agentic Q&A)
+* **Grounded Q&A Engine:** Natural language conversational assistant powered by Groq (`openai/gpt-oss-120b`).
+* **Movie-Scoped Retrieval:** Assembles relevant chunks from ChromaDB for deep dive Q&A on specific film detail pages.
+* **Bounded Agentic Routing:** Uses function calling (`search_movies`, `filter_by_verdict`, `filter_by_rating`, `retrieve_review`, `general_semantic_search`, `get_public_movie_info`) to execute multi-tool lookups.
+* **Fact Fallback to TMDB:** When user queries ask about external film facts (runtimes, cast details, plot overview) missing from personal notes, the agent queries TMDB explicitly, marking the data source clearly.
 
-### 🔎 Hybrid Search
-RoyReview uses the right retrieval method for different query types:
+### 🍿 Hybrid Content Recommendation Engine
+* **Multi-Component Scoring:** Computes recommendation affinity using five weighted components:
+  * Vector Embedding Similarity (50%) — `SentenceTransformer("all-MiniLM-L6-v2")`
+  * Lexical Review Content Similarity (18%) — Word overlap analysis
+  * Genre Affinity Overlap (14%) — Direct and family genre matching
+  * Personalization Taste Match (10%) — Inferred user interaction profile
+  * Personal Rating Quality Score (8%) — Normalized star rating
+* **Safety Filtering:** Excludes `Don't Watch` films from recommendations unless no eligible alternatives exist.
 
-- **MongoDB:** structured filters such as ratings and verdicts
-- **ChromaDB:** semantic and opinion-based questions
-- **Hybrid logic:** combines structured and semantic signals when appropriate
+### 👤 Non-Blocking Personalization Engine
+* **Asynchronous Event Logging:** Non-blocking background thread pool (`ThreadPoolExecutor`) logs user activities (`viewed`, `searched`, `asked_roy`, `favorited`).
+* **Dynamic Taste Profiling:** Aggregates interaction history in MongoDB to calculate genre and zone affinity once a threshold of 5 interactions is reached.
 
-### 🍿 Recommendations
-- Content-based recommendations
-- Embedding similarity
-- Genre overlap
-- Roy-rating quality
-- Hybrid recommendation scoring
-- User preference signal
-- Source-movie exclusion
-- Safer preference for positively reviewed movies
+### 📊 Real-Time Analytics Dashboard
+* **Aggregation Pipelines:** Performs server-side MongoDB aggregation for read-only analytics.
+* **Altair Visualizations:** Interactive charts for rating distributions, verdict splits, genre preferences, zone-wise ratings, and year-wise trends.
+* **Top-Rated Showcase:** Automated top 10 highest-rated films leaderboard.
 
-### 📊 Movie Analytics
-- Rating distribution
-- Verdict distribution
-- Genre patterns
-- Zone patterns
-- Year-wise trends
-- Highest-rated movies
-- Review statistics
-
-### 👤 Personalization
-RoyReview records lightweight interaction events such as:
-
-- `viewed`
-- `searched`
-- `asked_roy`
-- `favorited`
-
-Interaction history is used to infer genre and zone preferences. Personalization becomes active after a minimum interaction threshold; new users continue to receive the generic movie experience until enough history exists.
-
-Interaction logging is best-effort and non-blocking so a logging failure does not stop the main user flow.
-
-### 🔐 Authentication & Admin
-- Signup
-- Login
-- Session-based authentication
-- Logout
-- Admin authentication
-- Protected application pages
-- Add/manage movie reviews
-- Review approval workflow
-- RAG ingestion workflow
+### 🔐 Authentication & Admin Management
+* **Bcrypt Password Hashing:** Secure authentication flow for registered users and administrative accounts.
+* **Review Operations:** Dedicated admin portal to write, edit, confirm, and toggle RAG ingestion status for reviews.
+* **Session Management:** Secure Streamlit session state isolation between users and admins.
 
 ---
 
-## Generative AI Architecture
+## Tech Stack
 
-```text
-                     User
-                       │
-                       ▼
-                Streamlit Application
-                       │
-          ┌────────────┼─────────────┐
-          ▼            ▼             ▼
-     Movie/Search   Ask Roy      Recommendations
-          │            │             │
-          ▼            ▼             ▼
-       MongoDB      Query Router   Hybrid Scoring
-          │            │             │
-          │      ┌─────┴─────┐       │
-          │      ▼           ▼       │
-          │  MongoDB      ChromaDB   │
-          │  Exact       Semantic   │
-          │  Search      Retrieval  │
-          │      └─────┬─────┘       │
-          │            ▼             │
-          │      Retrieved Context   │
-          │            │             │
-          │            ▼             │
-          │        Groq LLM          │
-          │            │             │
-          └────────────┴─────────────┘
-                       │
-                       ▼
-                  User Response
+| Category | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Frontend / Web Framework** | [Streamlit 1.63.0](https://streamlit.io/) | Web UI, reactive page routing, and design system |
+| **Data Visualization** | [Altair 6.2.2](https://altair-viz.github.io/) | Interactive analytics charts and plots |
+| **Database** | [MongoDB Atlas](https://www.mongodb.com/) (PyMongo 4.18.0) | Document store for users, reviews, and interaction logs |
+| **Vector Database** | [ChromaDB 1.5.9](https://www.trychroma.com/) | Persistent local vector store for review embeddings |
+| **Embedding Model** | [Sentence Transformers 6.0.1](https://www.sbert.net/) | `all-MiniLM-L6-v2` dense vector embeddings |
+| **LLM Provider** | [Groq SDK 1.7.0](https://groq.com/) | High-speed LLM inference running `openai/gpt-oss-120b` |
+| **Metadata API** | [TMDB API](https://www.themoviedb.org/) (Requests 2.34.2) | External poster URLs, cast overviews, and release data |
+| **Security & Utilities** | Bcrypt 5.0.0, Python-Dotenv, Pydantic | Password hashing, env configuration, schema validation |
+| **Testing** | Pytest 9.1.1 | Unit, integration, and RAG evaluation test suite |
+
+---
+
+## Architecture Overview
+
+The system follows a modular, layered architecture separating user interface, application services, retrieval routing, storage engines, and external AI providers.
+
+```mermaid
+flowchart TD
+    subgraph UI ["User Interface Layer (Streamlit)"]
+        Nav["App Shell & Navigation (ui/design.py)"]
+        Home["Home & Explore (ui/home.py, ui/explore.py)"]
+        Details["Movie Details (ui/movie_details.py)"]
+        AskRoyUI["Ask CineAI Q&A (ui/ask_roy.py)"]
+        AdminUI["Admin Operations & Analytics (app.py, ui/analytics.py)"]
+    end
+
+    subgraph AppService ["Auth & Personalization Services"]
+        AuthModule["Bcrypt Security & Login (auth/login.py, auth/security.py)"]
+        AsyncLogger["Async Interaction Logger (ai/personalization.py)"]
+        TasteEngine["Preference Profiler (ai/personalization.py)"]
+    end
+
+    subgraph DataLayer ["Data & Vector Storage"]
+        MongoDB[("MongoDB Atlas\nUsers, Movies, Interactions")]
+        ChromaDB[("ChromaDB Vector Store\nall-MiniLM-L6-v2 Embeddings")]
+    end
+
+    subgraph AILayer ["AI, RAG & Recommendation Engine"]
+        EmbeddingEngine["SentenceTransformer Model\n(rag/embeddings.py)"]
+        HybridRouter["Hybrid Retriever & QA (rag/qa.py, rag/hybrid.py)"]
+        AgentCore["Bounded Tool Calling Agent (ai/agent.py)"]
+        Recommender["Hybrid Recommender System (ai/recommender.py)"]
+        GroqAPI["Groq LLM Client\nopenai/gpt-oss-120b (ai/llm.py)"]
+    end
+
+    subgraph ExternalServices ["External API"]
+        TMDB["TMDB Public API\nPosters & Movie Metadata (movies/tmdb.py)"]
+    end
+
+    %% Flow connections
+    Nav --> AuthModule
+    Home --> MongoDB
+    Home --> TasteEngine
+    Details --> Recommender
+    Details --> AskRoyUI
+    AskRoyUI --> AgentCore
+    AgentCore --> HybridRouter
+    AgentCore --> TMDB
+    HybridRouter --> ChromaDB
+    HybridRouter --> MongoDB
+    HybridRouter --> GroqAPI
+    Recommender --> ChromaDB
+    Recommender --> MongoDB
+    EmbeddingEngine --> ChromaDB
+    AsyncLogger --> MongoDB
+    AdminUI --> MongoDB
+    TMDB --> Home
 ```
-
----
-
-## RAG Pipeline
-
-```text
-Confirmed Movie Review
-        │
-        ▼
-Structured Review Document
-        │
-        ▼
-Sentence Transformer
-(all-MiniLM-L6-v2)
-        │
-        ▼
-Embedding
-        │
-        ▼
-ChromaDB
-(royreview_reviews)
-        ▲
-        │
-User Question
-        │
-        ▼
-Question Embedding
-        │
-        ▼
-Similarity Retrieval
-        │
-        ▼
-Relevant Review Context
-        │
-        ▼
-Grounding Prompt
-        │
-        ▼
-Groq LLM
-(openai/gpt-oss-120b)
-        │
-        ▼
-Grounded Answer
-```
-
-### Grounding Rules
-
-Ask Roy is instructed to:
-
-- Use retrieved RoyReview context as its source of truth
-- Never invent Roy's opinion
-- Never invent a rating or verdict
-- Never claim Roy reviewed a movie when it is not in the knowledge base
-- Keep Roy's personal opinion separate from general movie facts
-- Return a controlled fallback when the available context does not support an answer
-
-Fallback:
-
-```text
-I couldn't find that in Roy's movie notes.
-```
-
----
-
-## Agentic RAG
-
-RoyReview also includes a bounded agentic retrieval path.
-
-The agent can use a small set of controlled tools for:
-
-1. Movie-title search
-2. Verdict/rating filtering
-3. Scoped movie-review retrieval
-4. General semantic review search
-
-The agent is intentionally bounded to a maximum of **3 tool calls** per request and preserves the same grounding rules as the normal RAG path.
-
-This provides an agentic architecture without allowing unrestricted tool execution or unsupported movie knowledge.
-
----
-
-## Review Integrity
-
-A major design decision is separating Roy's actual opinions from AI-generated content.
-
-```text
-New / Draft Review
-       │
-       ▼
-NEEDS_USER_APPROVAL
-       │
-       ├── Not approved ──► Not indexed
-       │
-       ▼
-    CONFIRMED
-       │
-       ▼
-Embedding Generation
-       │
-       ▼
-ChromaDB
-       │
-       ▼
-Ask Roy Knowledge Base
-```
-
-Only confirmed reviews are ingested into RAG.
-
-This prevents an AI-generated draft from accidentally becoming part of Roy's personal opinion database.
-
----
-
-## Recommendation Architecture
-
-RoyReview combines several signals:
-
-```text
-Content Similarity
-       +
-Embedding Similarity
-       +
-Roy Rating Quality
-       +
-Genre / Preference Match
-       │
-       ▼
-Hybrid Recommendation Score
-       │
-       ▼
-Ranked Movies
-```
-
-Personalization acts as an additional ranking signal rather than a hard dependency.
-
----
-
-## Personalization Architecture
-
-```text
-User Interaction
-      │
-      ├── viewed
-      ├── searched
-      ├── asked_roy
-      └── favorited
-             │
-             ▼
-      MongoDB Interaction Data
-             │
-             ▼
-     Preference Profile
-       ┌─────┴─────┐
-       ▼           ▼
-    Genres       Zones
-       └─────┬─────┘
-             ▼
-    Recommendation Signal
-             │
-             ▼
-       Personalized Ranking
-```
-
-Interaction weights are intentionally different: stronger actions such as favoriting and asking about a movie contribute more than a simple view.
-
----
-
-## Technology Stack
-
-| Layer | Technology |
-|---|---|
-| Language | Python |
-| UI | Streamlit |
-| Database | MongoDB Atlas |
-| Movie Metadata | TMDB API |
-| LLM Provider | Groq |
-| LLM Model | `openai/gpt-oss-120b` |
-| Embedding Model | `all-MiniLM-L6-v2` |
-| Embedding Library | Sentence Transformers |
-| Vector Database | ChromaDB |
-| ML / Evaluation | scikit-learn |
-| Testing | pytest |
-| Version Control | Git / GitHub |
-| Deployment Target | Streamlit Community Cloud |
 
 ---
 
 ## Project Structure
 
-```text
+```
 RoyReview/
-│
-├── app.py
-│
-├── config/
-│   ├── __init__.py
-│   └── settings.py
-│
-├── database/
-│   ├── __init__.py
-│   ├── mongodb.py
-│   └── models.py
-│
-├── auth/
-│   ├── __init__.py
-│   ├── login.py
-│   ├── signup.py
-│   └── security.py
-│
-├── movies/
-│   ├── __init__.py
-│   ├── movie_service.py
-│   ├── tmdb.py
-│   └── imdb.py
-│
-├── rag/
-│   ├── __init__.py
-│   ├── embeddings.py
-│   ├── vector_store.py
-│   ├── retriever.py
-│   ├── prompts.py
-│   ├── qa.py
-│   ├── ingest.py
-│   ├── hybrid.py
-│   └── evaluation.py
-│
+├── .streamlit/
+│   └── secrets.toml              # Local environment configuration & API keys (Git-ignored)
 ├── ai/
 │   ├── __init__.py
-│   ├── llm.py
-│   ├── recommender.py
-│   ├── agent.py
-│   └── personalization.py
-│
-├── ui/
+│   ├── agent.py                  # Bounded tool-calling agent for Ask CineAI Q&A
+│   ├── llm.py                    # Groq LLM API wrapper (openai/gpt-oss-120b)
+│   ├── personalization.py        # Async interaction logging & user preference profiler
+│   └── recommender.py            # Hybrid recommendation algorithm (5-component score)
+├── auth/
 │   ├── __init__.py
-│   ├── home.py
-│   ├── dashboard.py
-│   ├── movie_details.py
-│   ├── ask_roy.py
-│   ├── explore.py
-│   ├── analytics.py
-│   ├── profile.py
-│   └── design.py
-│
+│   ├── login.py                  # Login handler & admin authentication
+│   ├── security.py               # Bcrypt password hashing & verification
+│   └── signup.py                 # User registration workflow
+├── chroma_db/                    # Local persistent ChromaDB vector store directory
+├── config/
+│   ├── __init__.py
+│   └── settings.py               # Application configuration & recommendation weights
+├── database/
+│   ├── __init__.py
+│   ├── models.py                 # User document builders & public projections
+│   └── mongodb.py                # Lazy MongoDB Atlas client & collection getters
+├── movies/
+│   ├── __init__.py
+│   ├── imdb.py                   # IMDb metadata helpers
+│   ├── movie_service.py          # Movie domain service interface
+│   └── tmdb.py                   # TMDB REST API client & metadata enrichment
+├── rag/
+│   ├── __init__.py
+│   ├── bootstrap.py              # Vector store initialization check
+│   ├── embeddings.py             # SentenceTransformer embedding model wrapper
+│   ├── evaluation.py             # RAG precision, recall & faithfulness metrics
+│   ├── hybrid.py                 # Hybrid exact-filtering logic
+│   ├── ingest.py                 # RAG ingestion utilities
+│   ├── prompts.py                # System and user prompts for RAG
+│   ├── qa.py                     # Hybrid RAG question answering pipeline
+│   ├── retriever.py              # ChromaDB context retrieval logic
+│   └── vector_store.py           # ChromaDB collection lifecycle & query wrappers
 ├── scripts/
-│   ├── import_movies.py
-│   ├── build_embeddings.py
-│   ├── rebuild_embeddings.py
-│   ├── run_rag_eval.py
-│   └── tune_recommender.py
-│
-├── tests/
+│   ├── build_embeddings.py       # Script to embed confirmed movies into ChromaDB
+│   ├── import_movies.py          # CSV import script with TMDB metadata enrichment
+│   ├── rebuild_embeddings.py     # Script to reset and rebuild vector store
+│   ├── run_rag_eval.py           # Script to evaluate RAG accuracy on test set
+│   └── tune_recommender.py       # Recommendation weight tuning utility
+├── tests/                        # Comprehensive Pytest suite
+│   ├── conftest.py
 │   ├── rag_eval/
-│   │   └── eval_set.json
-│   ├── test_auth.py
-│   ├── test_movies.py
-│   ├── test_database.py
-│   ├── test_rag.py
+│   │   └── eval_set.json         # Labeled RAG evaluation dataset
 │   ├── test_agent.py
 │   ├── test_analytics.py
+│   ├── test_auth.py
+│   ├── test_database.py
 │   ├── test_evaluation.py
+│   ├── test_hybrid.py
+│   ├── test_movies.py
 │   ├── test_personalization.py
+│   ├── test_qa.py
+│   ├── test_rag.py
+│   ├── test_rag_grounding.py
 │   ├── test_rebuild.py
 │   ├── test_recommender.py
 │   ├── test_resilience.py
 │   └── test_smoke.py
-│
-├── data/
-├── utils/
-│
-├── .streamlit/
-│   └── secrets.toml          # local only; never commit
-│
-├── requirements.txt
-├── .gitignore
-└── README.md
+├── ui/
+│   ├── __init__.py
+│   ├── analytics.py              # Admin MongoDB aggregation charts (Altair)
+│   ├── ask_roy.py                # Inline Ask CineAI Q&A component
+│   ├── dashboard.py              # Supplemental dashboard components
+│   ├── design.py                 # CSS design system & navigation components
+│   ├── explore.py                # Verdict & 5-star collection filtering UI
+│   ├── home.py                   # Home view & search results UI
+│   ├── movie_details.py          # Movie details & recommendations layout
+│   └── profile.py                # User profile view & editor
+├── app.py                        # Main Streamlit application entry point
+├── requirements.txt              # Complete Python dependency manifest
+└── README.md                     # Project documentation
 ```
 
 ---
 
-## Database Design
+## Setup & Installation
 
-### MongoDB Atlas
+### Prerequisites
+* **Python 3.10+** installed locally.
+* **MongoDB Atlas** cluster URI (or local MongoDB server instance).
+* **TMDB API Key** (v3 API Key from [The Movie Database](https://www.themoviedb.org/documentation/api)).
+* **Groq API Key** (from [Groq Console](https://console.groq.com/)).
 
-Database:
-
-```text
-royreview
-```
-
-Primary collection:
-
-```text
-movies
-```
-
-Typical movie fields:
-
-```text
-movie_id
-title
-year
-zone
-genre
-roy_rating
-verdict
-review_text
-review_status
-ingest_to_rag
-tmdb_id
-poster_url
-tmdb_overview
-tmdb_rating
-imdb_id
-```
-
-A separate user-interaction collection stores personalization events.
-
-### ChromaDB
-
-Collection:
-
-```text
-royreview_reviews
-```
-
-Each vector record contains:
-
-- Document ID
-- Review document
-- Embedding
-- Movie metadata
-
-The current verified local knowledge base contains **84 embedded confirmed review documents**.
-
----
-
-## External APIs
-
-### TMDB
-
-Used for:
-
-- Movie metadata
-- Posters
-- Backdrops
-- Release information
-- Genres
-- TMDB ratings
-- IMDb IDs when available
-
-Roy's rating is stored separately from external ratings.
-
-### Groq
-
-Used to generate the final natural-language response for Ask Roy.
-
-The LLM is not treated as the source of Roy's opinions. Retrieved review context is supplied to it at runtime.
-
----
-
-## Dataset
-
-The application contains **100+ movie records**, including:
-
-- Confirmed reviews
-- AI-draft candidate reviews
-- Movie metadata
-- Posters
-- Review status
-- RAG ingestion status
-
-Only confirmed reviews are treated as Roy's actual opinions.
-
----
-
-## Installation
-
-### 1. Clone the repository
-
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/ArponRoy007/RoyReview.git
 cd RoyReview
 ```
 
-### 2. Create a virtual environment
-
+### 2. Create and Activate Virtual Environment
 ```bash
 python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-macOS / Linux:
-
-```bash
-source venv/bin/activate
-```
-
-Windows:
-
-```bash
-venv\Scripts\activate
-```
-
-### 3. Install dependencies
-
+### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configure local secrets
-
-Create:
-
-```text
-.streamlit/secrets.toml
-```
-
-Use the secret names expected by the application.
-
-Example structure:
+### 4. Configure Streamlit Secrets
+Create a secrets file at `.streamlit/secrets.toml`:
 
 ```toml
-MONGODB_URI = "your-mongodb-connection-string"
-TMDB_API_KEY = "your-tmdb-api-key"
-GROQ_API_KEY = "your-groq-api-key"
+# MongoDB Atlas Connection
+MONGODB_URI = "mongodb+srv://<username>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority"
+DATABASE_NAME = "royreview"
+MOVIES_COLLECTION_NAME = "movies"
+USERS_COLLECTION_NAME = "users"
+USER_INTERACTIONS_COLLECTION_NAME = "user_interactions"
 
-ADMIN_USERNAME = "your-admin-username"
-ADMIN_PASSWORD = "your-admin-password"
+# External API Keys
+TMDB_API_KEY = "your_tmdb_api_key_here"
+GROQ_API_KEY = "your_groq_api_key_here"
+
+# Admin Authentication
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "your_admin_password_here"
 ```
 
-**Never commit this file or expose the values publicly.**
+### 5. Ingest Movies & Build Embeddings
+If setting up a fresh database, run the import and embedding scripts:
+```bash
+# 1. Import base movie dataset & enrich with TMDB metadata
+python scripts/import_movies.py
 
-### 5. Run the application
+# 2. Build ChromaDB vector embeddings for RAG
+python scripts/build_embeddings.py
+```
 
+### 6. Run the Application
+Launch the Streamlit web interface:
 ```bash
 streamlit run app.py
 ```
+Open `http://localhost:8501` in your browser.
 
 ---
 
-## Testing
+## Usage Walkthrough
 
-RoyReview has an automated test suite covering authentication, database behavior, movie services, RAG components, recommendations, personalization, resilience, rebuilding, analytics, agent behavior, and smoke-level integration.
-
-Latest verified result:
-
-```text
-70 passed, 1 warning
-```
-
-Compilation verification:
-
-```bash
-python -m compileall -q .
-```
-
-The compilation check completed without errors.
-
-The remaining warning is a dependency-side ChromaDB/Python deprecation warning and does not cause test failure.
-
-### Run tests
-
-```bash
-pytest -q
-```
-
-### Run compilation check
-
-```bash
-python -m compileall -q .
-```
+1. **User Authentication:**
+   * Launch the app and sign up for a personal account or sign in with existing credentials.
+   * Admins sign in using configured secret credentials to access the admin portal.
+2. **Search & Explore Collections:**
+   * Browse film cards on the home screen or enter search terms in the top search bar.
+   * Click verdict buttons (`Must Watch`, `Good Watch`, `Don't Watch`) to immediately filter movies by status.
+3. **Inspect Movie Reviews & Details:**
+   * Click **View review** on any film card to view the movie detail view.
+   * Read personal ratings, verdicts, zone classification, poster artwork, and full review text.
+4. **Interact with Ask CineAI:**
+   * Scroll to the **Ask CineAI** section on a movie page or ask general collection questions.
+   * Choose pre-set questions like *"What makes this movie worth watching?"* or type custom natural language queries.
+   * View grounded AI answers along with highlighted source notes or TMDB attribution.
+5. **Personalized Recommendations:**
+   * As you view, search, and ask about movies, the non-blocking background logger builds your personal taste profile.
+   * Explore the **You might also like** carousel on movie detail pages to discover high-affinity recommendations.
 
 ---
 
-## RAG Evaluation
-
-The project contains a labeled evaluation set:
-
-```text
-tests/rag_eval/eval_set.json
-```
-
-It covers:
-
-- Grounded questions
-- Unsupported questions
-- Ambiguous titles
-- Typo / partial-title inputs
-- Expected facts and fallback behavior
-
-Run the baseline evaluation manually:
-
-```bash
-python scripts/run_rag_eval.py
-```
-
-Run the agentic path:
-
-```bash
-python scripts/run_rag_eval.py --agent
-```
-
-These evaluations call the Groq API, so they are intentionally separate from the normal `pytest` suite.
-
-### Evaluation note
-
-The current evaluation shows **strong retrieval performance**, while answer faithfulness/correctness still has room for improvement. This is expected to be treated as an engineering optimization area rather than hidden behind the automated test count.
-
-The retrieval layer should therefore not be described as "perfect" simply because the automated suite is green.
-
----
-
-## Rebuilding the RAG Knowledge Base
-
-When confirmed reviews change or new confirmed reviews are added:
-
-```bash
-python scripts/rebuild_embeddings.py
-```
-
-The workflow is:
-
-```text
-MongoDB Confirmed Reviews
-        ↓
-Review Document Preparation
-        ↓
-Embedding Generation
-        ↓
-ChromaDB Upsert
-        ↓
-Updated RAG Knowledge Base
-```
-
----
-
-## Recommendation Tuning
-
-The project includes a small sanity-check script for recommendation ranking:
-
-```bash
-python scripts/tune_recommender.py
-```
-
-It checks representative recommendation pairs and helps verify that expected related movies rank appropriately.
-
----
-
-## Security
-
-### Never commit:
-
-```text
-.streamlit/secrets.toml
-.env
-API keys
-Database passwords
-Private credentials
-```
-
-Secrets should be supplied through Streamlit's secret-management system in deployment.
-
-If a credential is accidentally exposed, rotate it immediately.
-
----
-
-## Deployment
-
-### Recommended free deployment
-
-**Streamlit Community Cloud**
-
-Target architecture:
-
-```text
-GitHub
-   │
-   ▼
-Streamlit Community Cloud
-   │
-   ├── MongoDB Atlas
-   ├── Groq API
-   └── TMDB API
-```
-
-Deployment settings:
-
-```text
-Repository: ArponRoy007/RoyReview
-Branch: main
-Main file: app.py
-```
-
-Configure the required secrets in the deployment platform rather than committing `.streamlit/secrets.toml`.
-
-### Important ChromaDB deployment consideration
-
-RoyReview currently uses a local persistent ChromaDB directory for its vector store.
-
-A cloud deployment should not assume that local runtime storage is permanent. Before treating the deployed RAG store as production-grade, verify how the deployment environment persists or rebuilds the vector database.
-
-For a college/demo deployment, the vector-store strategy should be tested immediately after deployment:
-
-```text
-Open App
-   ↓
-Ask Roy
-   ↓
-Run a known grounded question
-   ↓
-Verify retrieved review / answer
-```
-
-If the deployed instance starts without the expected 84 vector documents, the RAG initialization strategy must be adjusted before the deployment is considered complete.
-
----
-
-## Main User Flow
-
-```text
-Home
-  ↓
-Search Movie
-  ↓
-Movie Details
-  ↓
-Rating + Verdict + Review
-  ↓
-Recommendations
-  ↓
-Ask Roy
-  ↓
-Retrieval
-  ↓
-Grounded AI Answer
-```
-
----
-
-## Admin Flow
-
-```text
-Admin Login
-    ↓
-Admin Dashboard
-    ↓
-Add / Manage Review
-    ↓
-TMDB Enrichment
-    ↓
-Confirm Review
-    ↓
-Generate Embedding
-    ↓
-ChromaDB
-    ↓
-Available to Ask Roy
-```
-
----
-
-## Example: Jai Bhim
-
-A verified Jai Bhim record contains:
-
-```text
-Rating: 4.5/5
-Verdict: Must Watch
-```
-
-A user can ask:
-
-```text
-Why did Roy give this rating?
-```
-
-The system:
-
-```text
-Question
-   ↓
-Embedding
-   ↓
-ChromaDB Retrieval
-   ↓
-Jai Bhim Review
-   ↓
-Grounded Context
-   ↓
-Groq LLM
-   ↓
-Answer
-```
-
-The answer is generated from the retrieved review rather than from the LLM's general movie knowledge.
-
----
-
-## Challenges & Engineering Solutions
-
-| Challenge | Solution |
-|---|---|
-| Preventing hallucinated opinions | RAG + strict grounding prompt + fallback |
-| Exact rating/verdict questions | MongoDB structured queries |
-| Semantic review questions | Sentence Transformer + ChromaDB |
-| Unapproved AI reviews | Explicit approval and ingestion status |
-| External movie metadata | Dedicated TMDB service |
-| Variable LLM output | Separate deterministic retrieval/evaluation logic |
-| Recommendation quality | Hybrid scoring signals |
-| User preference learning | Interaction-based profile |
-| AI tool execution | Bounded agent loop |
-| Production resilience | Defensive error handling and regression tests |
-
----
-
-## Why RAG Instead of Fine-Tuning?
-
-RoyReview's goal is to answer using a changing collection of personal reviews.
-
-RAG is suitable because new confirmed reviews can be added and indexed without retraining the LLM.
-
-```text
-Confirmed Review
-      ↓
-Embedding
-      ↓
-Vector Store
-      ↓
-Retrieve When Relevant
-      ↓
-LLM
-```
-
-The model remains the language-generation layer while the review database remains the knowledge source.
-
----
-
-## Why Hybrid Search?
-
-Not every question is semantic.
-
-For example:
-
-```text
-Which movies did Roy rate 5/5?
-```
-
-is naturally a structured database query.
-
-While:
-
-```text
-Why does Roy like this movie?
-```
-
-is naturally a semantic retrieval problem.
-
-Therefore:
-
-```text
-Structured Question → MongoDB
-Semantic Question   → ChromaDB
-Combined Question   → Hybrid Logic
-```
-
-This makes the retrieval architecture more appropriate for different query types.
-
----
-
-## Current Project Metrics
-
-| Metric | Status |
-|---|---|
-| Movie Records | 100+ |
-| Confirmed Reviews | 80+ |
-| RAG Documents | 84 |
-| Authentication | Implemented |
-| Admin Dashboard | Implemented |
-| Movie Search | Implemented |
-| Movie Details | Implemented |
-| TMDB Integration | Implemented |
-| Ask Roy | Implemented |
-| Embeddings | Implemented |
-| ChromaDB | Implemented |
-| RAG | Implemented |
-| Hybrid Search | Implemented |
-| Content-Based Recommendations | Implemented |
-| Hybrid Recommendation Scoring | Implemented |
-| Movie Analytics | Implemented |
-| Interaction Logging | Implemented |
-| User Preference Profiles | Implemented |
-| Personalization Signal | Implemented |
-| Bounded Agentic RAG | Implemented |
-| Automated Tests | 70 |
-| Latest Automated Test Result | 70 Passed |
-| Python Compilation | Passed |
-| GitHub | Configured |
-| Deployment Target | Streamlit Community Cloud |
-
----
-
-## Current Engineering Status
-
-### Completed
-
-- Core movie-review application
-- Authentication
-- MongoDB integration
-- TMDB integration
-- Review approval workflow
-- Embeddings
-- ChromaDB vector search
-- Ask Roy
-- Hybrid search
-- Content-based recommendations
-- Hybrid recommendation scoring
-- Movie analytics
-- Interaction logging
-- Preference profiles
-- Personalization signal
-- Bounded agentic RAG
-- Automated testing
-- Deployment preparation
-
-### Ongoing Quality Work
-
-The application is functionally implemented, but AI answer quality is still an area for improvement.
-
-Future optimization should focus on:
-
-- Stronger answer grounding
-- Better unsupported-question handling
-- More reliable title resolution
-- Better ambiguity handling
-- More deterministic agent routing
-- Expanded RAG evaluation
-- Recommendation ranking evaluation
-- Production vector-store persistence
-
-This distinction is important: **70 passing automated tests verify application behavior; they do not prove that every LLM-generated answer is perfect.**
+## Screenshots
+
+> [!NOTE]
+> Add application screenshots to `docs/screenshots/` to display visual previews here.
+
+| Section | Preview |
+| :--- | :--- |
+| **Home & Explore** | `![Home Screen](docs/screenshots/home.png)` *(Place home.png in `docs/screenshots/`)* |
+| **Movie Details & Recommendations** | `![Movie Details](docs/screenshots/movie_details.png)` *(Place movie_details.png in `docs/screenshots/`)* |
+| **Ask CineAI Q&A** | `![Ask CineAI Q&A](docs/screenshots/ask_cineai.png)` *(Place ask_cineai.png in `docs/screenshots/`)* |
+| **Admin Operations & Analytics** | `![Admin Dashboard](docs/screenshots/admin_dashboard.png)` *(Place admin_dashboard.png in `docs/screenshots/`)* |
 
 ---
 
 ## Future Scope
 
-- Improve RAG answer faithfulness and correctness
-- Expand the evaluation dataset
-- Improve ambiguous and typo title handling
-- Add more advanced recommendation ranking
-- Add semantic user-preference modeling
-- Add time-aware interaction weighting
-- Add richer analytics
-- Add recommendation evaluation dashboards
-- Introduce persistent production-grade vector storage
-- Add monitoring and observability
-- Optimize cloud startup and model loading
-- Improve production security and dependency management
+> [!IMPORTANT]
+> The features listed below represent planned enhancements and architectural extensions. They are intentionally kept distinct from the currently implemented functionality described above.
+
+* **Planned: Multi-Modal Voice & Chat Interfaces** — Integrating real-time speech-to-text input for hands-free Q&A in Ask CineAI.
+* **Planned: Automated RAG Evaluation Pipeline** — Expanding `scripts/run_rag_eval.py` into a continuous CI/CD evaluation step using RAGAS or synthetic test suites.
+* **Planned: Advanced Collaborative Filtering** — Enhancing the hybrid recommendation algorithm with user-to-user similarity matrix computations once the registered user base scales.
+* **Planned: Social Features & Journal Sharing** — Allowing users to build shared playlists, movie watchlists, and publish user-generated reviews alongside Roy's reviews.
+* **Planned: Predictive Rating Insights** — Admin-facing analytics leveraging historical reviews to predict potential ratings for upcoming film releases.
 
 ---
 
-## Internship / Academic Learning Outcomes
+## Contributing
 
-RoyReview demonstrates practical application of:
+Contributions, bug reports, and feature proposals are welcome! 
 
-- AI and NLP fundamentals
-- Text similarity
-- Large Language Models
-- Prompt engineering
-- Embeddings
-- Vector databases
-- Semantic search
-- Retrieval-Augmented Generation
-- Hybrid search
-- Grounding and hallucination control
-- Tool-based agent workflows
-- Recommendation systems
-- Personalization
-- External API integration
-- MongoDB
-- Authentication
-- Automated testing
-- Git/GitHub
-- Cloud deployment preparation
-
----
-
-## Project Presentation
-
-A suitable college presentation structure is:
-
-1. Project Title
-2. Problem Statement
-3. Objectives
-4. Proposed Solution
-5. Technology Stack
-6. System Architecture
-7. Application Features
-8. Generative AI / Ask Roy
-9. RAG Architecture
-10. Hybrid Search & Recommendations
-11. Personalization
-12. Admin Workflow
-13. Testing & Evaluation
-14. Challenges & Solutions
-15. Future Scope
-16. Conclusion
-
----
-
-## Suggested Project Evidence
-
-For a college report or presentation, capture:
-
-1. Home / landing page
-2. Movie search
-3. Movie details
-4. Roy rating and verdict
-5. Recommendation section
-6. Ask Roy interface
-7. Grounded Ask Roy response
-8. Analytics dashboard
-9. Profile / personalization
-10. Admin dashboard
-11. Add-review workflow
-12. MongoDB Atlas data
-13. RAG / ChromaDB verification
-14. Terminal showing `70 passed`
-15. GitHub repository
-16. Final deployed application
-
----
-
-## Author
-
-**Arpon Roy**
-
-B.Tech / CSE Student  
-Generative AI & Software Development Project
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/amazing-feature`).
+3. Commit your changes (`git commit -m 'Add amazing feature'`).
+4. Push to the branch (`git checkout -b feature/amazing-feature`).
+5. Open a Pull Request.
 
 ---
 
 ## License
 
-This project was developed as a college/internship project for educational and portfolio purposes.
+*(Placeholder: Specify repository license file, e.g. MIT License. See [LICENSE](LICENSE) file if available).*
+
+---
+
+## Contact
+
+- **Project Lead:** Arpon Roy ([@ArponRoy007](https://github.com/ArponRoy007)) & Sonal
+- **Repository:** [https://github.com/ArponRoy007/RoyReview](https://github.com/ArponRoy007/RoyReview)
