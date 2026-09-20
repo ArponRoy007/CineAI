@@ -44,7 +44,7 @@ def render_recommendations(movie, user=None):
                 <div class="rr-kicker">SIMILAR TO THIS</div>
                 <h2>You might also like</h2>
                 <p>
-                    Chosen from Roy's collection by review similarity and taste.
+                    Chosen from Our collection by review similarity and taste.
                 </p>
             </div>
         </div>
@@ -429,7 +429,7 @@ def render_movie_details(movie, user=None):
             </div>
 
             <div class="rr-kicker">
-                Roy's review
+                Our review
             </div>
 
             <div class="rr-quote">

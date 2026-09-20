@@ -139,10 +139,10 @@ def render_ask_roy(movie, user=None):
     st.markdown(
         """
         <div class="rr-ask-roy">
-            <div class="rr-kicker">ASK ROY</div>
+            <div class="rr-kicker">ASK CINEAI</div>
             <h2>Ask anything about this movie</h2>
             <p>
-                Roy answers from his own movie notes first.
+                Our answers from our own movie notes first.
                 General movie facts can come from TMDB when needed.
             </p>
         </div>
@@ -154,7 +154,7 @@ def render_ask_roy(movie, user=None):
 
     question = st.text_area(
         "Ask Roy",
-        placeholder="What does Roy like about this movie?",
+        placeholder="What does CineAI like about this movie?",
         key=question_key,
         label_visibility="collapsed",
     )
@@ -163,7 +163,7 @@ def render_ask_roy(movie, user=None):
 
     with cols[0]:
         if st.button(
-            "Ask Roy",
+            "Ask CineAI",
             type="primary",
             use_container_width=True,
             key=f"ask_roy_submit_{movie_key}",
